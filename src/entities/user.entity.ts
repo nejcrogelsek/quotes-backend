@@ -5,7 +5,13 @@ export class User {
     id: number;
 
     @Column()
-    username: string;
+    email: string;
+
+    @Column()
+    first_name: string;
+
+    @Column()
+    last_name: string;
 
     @Column()
     password: string;
