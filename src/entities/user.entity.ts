@@ -16,9 +16,9 @@ export class User {
     @Column()
     password: string;
 
-    @Column({ default: Date.now() })
-    created_at: Date;
+    @Column({ default: Date.now().toLocaleString() })
+    created_at: string;
 
-    @Column({ default: Date.now() })
-    updated_at: Date;
+    @Column({ default: Date.now().toLocaleString() })
+    updated_at: string;
 }
