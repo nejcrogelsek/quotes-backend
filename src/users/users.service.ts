@@ -46,4 +46,10 @@ export class UsersService {
             throw new BadRequestException('Passwords do not match.');
         }
     }
+
+    async deleteUser(id: number): Promise<User> {
+        const user = await this.findById(id);
+
+        return this.usersRepository.remove(user);
+    }
 }
