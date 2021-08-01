@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
-import { User } from 'src/entities/user.entity';
+import { User } from '../entities/user.entity';
 import { CreateUpdateUserDto } from './dto/create-update-user.dto';
 import { UsersService } from './users.service';
 
