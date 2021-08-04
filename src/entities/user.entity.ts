@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { Quote } from './quote.entity';
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
@@ -15,6 +16,9 @@ export class User {
 
     @Column()
     password: string;
+
+    @OneToOne(() => Quote, quoteInfo => quoteInfo.user)
+    quote_info: Quote;
 
     @Column({ default: Date.now().toLocaleString() })
     created_at: string;
