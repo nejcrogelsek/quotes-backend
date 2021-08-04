@@ -33,6 +33,16 @@ export class UsersService {
         return found;
     }
 
+    async findByEmail(email: string): Promise<User> {
+        const found = this.usersRepository.findOne(email);
+
+        if (!found) {
+            throw new NotFoundException(`User with email: ${email} was not found.`);
+        }
+
+        return found;
+    }
+
     async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
         if (updateUserDto.password === updateUserDto.password) {
             const user = await this.findById(id);
