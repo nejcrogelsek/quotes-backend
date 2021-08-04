@@ -15,4 +15,10 @@ export class AuthService {
 
         return null;
     }
+
+    async login(user: User): Promise<{ access_token: string }> {
+        return {
+            access_token: 'SUCCESFULLY LOGGED IN!',
+        }
+    }
 }
