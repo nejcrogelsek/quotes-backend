@@ -13,7 +13,11 @@ export class UsersService {
         return this.usersRepository.find();
     }
 
-    createUser(createUserDto: CreateUserDto): Promise<User> {
+    async createUser(createUserDto: CreateUserDto): Promise<User> {
+        const user = await this.usersRepository.findOne({ email: createUserDto.email });
+        if (user && createUserDto.email === user.email) {
+            throw new BadRequestException(`User with email: ${createUserDto.email} already exists.`)
+        }
         if (createUserDto.confirm_password === createUserDto.password) {
             const newUser = this.usersRepository.create(createUserDto);
             return this.usersRepository.save(newUser);
