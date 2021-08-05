@@ -1,14 +1,10 @@
-# Read Me Template
+# Upvote/downvote-quotes-Quotastic
 
 ![Project Image](project-image-url)
-
-> This is a ReadMe template to help save you time and effort.
 
 ---
 
 ### Table of Contents
-
-You're sections headers will be used to reference location of destination.
 
 - [Description](#description)
 - [How To Use](#how-to-use)
@@ -20,14 +16,30 @@ You're sections headers will be used to reference location of destination.
 
 ## Description
 
-Creating ReadMe's for your Github repository can be tedious. I hope this template can save you time and effort as well as provide you with some consistency across your projects.
+Full-stack application that will allow the user to register, write one paragraph of motivational quote, review already registered users and their quotes, and upvote or downvote a quote.
 
 #### Technologies
 
-- Technology 1
-- Technology 2
+- HTML
+- CSS
+- Bootstrap
+- Figma
+- JavaScript
+- Typescript
+- Node
+- NestJS
+- Express
+- React
+- Docker
+- AWS
+- Git
+- Github
+- PostgreSQL
+- TypeORM
+- JWT
+- Postman
 
-[Back To The Top](#read-me-template)
+[Back To The Top](#Upvote/downvote-quotes-Quotastic)
 
 ---
 
@@ -35,19 +47,47 @@ Creating ReadMe's for your Github repository can be tedious. I hope this templat
 
 #### Installation
 
-#### API Reference
+Clone this repository and run:
 
-```html
-<p>dummy code</p>
+```bash
+$ yarn install
 ```
 
-[Back To The Top](#read-me-template)
+#### Running the app
 
----
+```bash
+# development
+$ yarn run start
+
+# watch mode
+$ yarn run start:dev
+
+# production mode
+$ yarn run start:prod
+```
+
+#### Test
+
+```bash
+# unit tests
+$ yarn run test
+
+# e2e tests
+$ yarn run test:e2e
+
+# test coverage
+$ yarn run test:cov
+```
 
 ## References
 
-[Back To The Top](#read-me-template)
+- SkillUp Mentor - [skillupmentor](https://skillupmentor.com/)
+
+- LinkedIn - [@nejcrogelsek](https://www.linkedin.com/in/nejcrogelsek/)
+- Github - [@nejcrogelsek](https://github.com/nejcrogelsek)
+- Website - [Nejc Rogelšek](https://nejcrogelsek.si)
+
+[Back To The Top](#Upvote/downvote-quotes-Quotastic)
 
 ---
 
@@ -55,33 +95,22 @@ Creating ReadMe's for your Github repository can be tedious. I hope this templat
 
 MIT License
 
-Copyright (c) [2017] [James Q Quick]
+Copyright (c) [2021] [skillupmentor](https://skillupmentor.com/)
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This assignment is protected with XYZ copyright. The Candidate may
+upload the assignment on his closed profile on GitHub (or other
+platform), but any other reproduction and distribution of the
+assignment itself or the assignment’s solutions without written
+permission of XYZ is prohibited.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-[Back To The Top](#read-me-template)
+[Back To The Top](#Upvote/downvote-quotes-Quotastic)
 
 ---
 
 ## Author Info
 
-- Twitter - [@jamesqquick](https://twitter.com/jamesqquick)
-- Website - [James Q Quick](https://jamesqquick.com)
+- LinkedIn - [@nejcrogelsek](https://www.linkedin.com/in/nejcrogelsek/)
+- Github - [@nejcrogelsek](https://github.com/nejcrogelsek)
+- Website - [Nejc Rogelšek](https://nejcrogelsek.si)
 
-[Back To The Top](#read-me-template)
+[Back To The Top](#Upvote/downvote-quotes-Quotastic)
