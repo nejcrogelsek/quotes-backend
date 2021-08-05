@@ -1,4 +1,4 @@
-# Upvote/downvote-quotes-Quotastic
+# Quotastic
 
 ![Project Image](project-image-url)
 
@@ -39,7 +39,7 @@ Full-stack application that will allow the user to register, write one paragraph
 - JWT
 - Postman
 
-[Back To The Top](#Upvote/downvote-quotes-Quotastic)
+[Back To The Top](#Quotastic)
 
 ---
 
@@ -87,7 +87,7 @@ $ yarn run test:cov
 - Github - [@nejcrogelsek](https://github.com/nejcrogelsek)
 - Website - [Nejc Rogelšek](https://nejcrogelsek.si)
 
-[Back To The Top](#Upvote/downvote-quotes-Quotastic)
+[Back To The Top](#Quotastic)
 
 ---
 
@@ -95,7 +95,7 @@ $ yarn run test:cov
 
 MIT License
 
-Copyright (c) [2021] [skillupmentor](https://skillupmentor.com/)
+Copyright (c) 2021 [skillupmentor](https://skillupmentor.com/)
 
 This assignment is protected with XYZ copyright. The Candidate may
 upload the assignment on his closed profile on GitHub (or other
@@ -103,7 +103,7 @@ platform), but any other reproduction and distribution of the
 assignment itself or the assignment’s solutions without written
 permission of XYZ is prohibited.
 
-[Back To The Top](#Upvote/downvote-quotes-Quotastic)
+[Back To The Top](#Quotastic)
 
 ---
 
@@ -113,4 +113,4 @@ permission of XYZ is prohibited.
 - Github - [@nejcrogelsek](https://github.com/nejcrogelsek)
 - Website - [Nejc Rogelšek](https://nejcrogelsek.si)
 
-[Back To The Top](#Upvote/downvote-quotes-Quotastic)
+[Back To The Top](#Quotastic)
