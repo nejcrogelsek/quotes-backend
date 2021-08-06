@@ -1,11 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Quote } from 'src/entities/quote.entity';
+import { Quote } from '../entities/quote.entity';
 import { Repository } from 'typeorm';
+import { UpdateQuoteDto } from './dto/update-quote';
 
 @Injectable()
 export class QuotesService {
-    constructor(@InjectRepository(Quote) private quotesRepository: Repository<Quote>) { }
+    constructor(
+        @InjectRepository(Quote) private quotesRepository: Repository<Quote>,
+    ) { }
 
     findAll(): Promise<Quote[]> {
         return this.quotesRepository.find();
@@ -19,8 +22,15 @@ export class QuotesService {
         return found;
     }
 
-    // createQuote(createQuoteDto):Promise<Quote>{
-    //     const quote = this.quotesRepository.create(createQuoteDto);
-    //     return this.quotesRepository.save(quote);
-    // }
+    async updateQuote(id: number, updateQuoteDto: UpdateQuoteDto): Promise<Quote> {
+        const quote = await this.findById(id);
+        quote.message = updateQuoteDto.message;
+        return this.quotesRepository.save(quote);
+    }
+
+    async deleteQuote(id: number): Promise<Quote> {
+        const quote = await this.findById(id);
+
+        return this.quotesRepository.remove(quote);
+    }
 }

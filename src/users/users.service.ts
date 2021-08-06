@@ -4,10 +4,12 @@ import { User } from '../entities/user.entity.js';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
+import { Quote } from '../entities/quote.entity.js';
 
 @Injectable()
 export class UsersService {
-    constructor(@InjectRepository(User) private usersRepository: Repository<User>) { };
+    constructor(@InjectRepository(User) private usersRepository: Repository<User>,
+        @InjectRepository(Quote) private quotesRepository: Repository<Quote>) { };
 
     findAll(): Promise<User[]> {
         return this.usersRepository.find();
@@ -20,7 +22,12 @@ export class UsersService {
         }
         if (createUserDto.confirm_password === createUserDto.password) {
             const newUser = this.usersRepository.create(createUserDto);
-            return this.usersRepository.save(newUser);
+            const savedUser = await this.usersRepository.save(newUser);
+
+            const quoteInfo = this.quotesRepository.create({ message: '' });
+            quoteInfo.user_id = savedUser.id;
+
+            return savedUser;
         }
         else {
             throw new BadRequestException('Passwords do not match.');
