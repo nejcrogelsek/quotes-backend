@@ -8,6 +8,11 @@ import { UsersService } from './users.service';
 export class UsersController {
     constructor(private usersService: UsersService) { }
 
+    @Get('test')
+    test(): Promise<User> {
+        return this.usersService.findByEmail('test@gmail.com');
+    }
+
     @Get()
     getUsers(): Promise<User[]> {
         return this.usersService.findAll();
