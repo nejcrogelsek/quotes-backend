@@ -26,6 +26,7 @@ export class UsersService {
 
             const quoteInfo = this.quotesRepository.create({ message: '' });
             quoteInfo.user_id = savedUser.id;
+            await this.quotesRepository.save(quoteInfo);
 
             return savedUser;
         }
