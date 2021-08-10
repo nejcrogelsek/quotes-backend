@@ -6,6 +6,7 @@ import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
 import { Quote } from '../entities/quote.entity.js';
 import * as bcrypt from 'bcrypt';
+import { format } from 'date-fns';
 
 @Injectable()
 export class UsersService {
@@ -28,7 +29,8 @@ export class UsersService {
             const salt = await bcrypt.genSalt(10);
             const hashedPassword: string = await bcrypt.hash(password, salt);
 
-            const createdUser = this.usersRepository.create({ ...rest, password: hashedPassword });
+            const formattedDate = format(new Date(Date.now()), 'dd-MM-yyyy HH:mm:ss');
+            const createdUser = this.usersRepository.create({ ...rest, password: hashedPassword, created_at: formattedDate, updated_at: formattedDate });
             const savedUser = await this.usersRepository.save(createdUser);
 
             const quoteInfo = this.quotesRepository.create({ message: '' });
@@ -70,7 +72,8 @@ export class UsersService {
             user.first_name = updateUserDto.first_name;
             user.last_name = updateUserDto.last_name;
             user.password = updateUserDto.password;
-            user.updated_at = new Date().toLocaleString();
+            const formattedDate = format(new Date(Date.now()), 'dd-MM-yyyy HH:mm:ss');
+            user.updated_at = formattedDate;
 
             return this.usersRepository.save(user);
         } else {
