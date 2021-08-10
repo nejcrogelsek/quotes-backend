@@ -1,4 +1,4 @@
-import { IsAlpha, IsAlphanumeric, IsEmail, IsOptional, MinLength } from "class-validator";
+import { IsAlpha, IsAlphanumeric, IsEmail, IsOptional, Matches, MinLength } from "class-validator";
 
 export class UpdateUserDto {
     @IsOptional()
@@ -14,12 +14,12 @@ export class UpdateUserDto {
     last_name: string;
 
     @IsOptional()
-    @IsAlphanumeric()
     @MinLength(6)
+    @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/)
     password: string;
-    
+
     @IsOptional()
-    @IsAlphanumeric()
     @MinLength(6)
+    @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/)
     confirm_password: string;
 }

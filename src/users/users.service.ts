@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
 import { Quote } from '../entities/quote.entity.js';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -23,8 +24,12 @@ export class UsersService {
             throw new BadRequestException(`User with email: ${createUserDto.email} already exists.`)
         }
         if (createUserDto.confirm_password === createUserDto.password) {
-            const newUser = this.usersRepository.create(createUserDto);
-            const savedUser = await this.usersRepository.save(newUser);
+            const { confirm_password, password, ...rest } = createUserDto;
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword: string = await bcrypt.hash(password, salt);
+
+            const createdUser = this.usersRepository.create({ ...rest, password: hashedPassword });
+            const savedUser = await this.usersRepository.save(createdUser);
 
             const quoteInfo = this.quotesRepository.create({ message: '' });
             quoteInfo.user_id = savedUser.id;
