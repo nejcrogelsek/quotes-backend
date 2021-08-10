@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Quote } from '../entities/quote.entity';
 import { Repository } from 'typeorm';
@@ -6,6 +6,7 @@ import { UpdateQuoteDto } from './dto/update-quote';
 
 @Injectable()
 export class QuotesService {
+    private logger = new Logger();
     constructor(
         @InjectRepository(Quote) private quotesRepository: Repository<Quote>,
     ) { }
@@ -23,12 +24,14 @@ export class QuotesService {
     }
 
     async updateQuote(id: number, updateQuoteDto: UpdateQuoteDto): Promise<Quote> {
+        this.logger.log('Updating a quote...');
         const quote = await this.findById(id);
         quote.message = updateQuoteDto.message;
         return this.quotesRepository.save(quote);
     }
 
     async deleteQuote(id: number): Promise<Quote> {
+        this.logger.log('Deleteing a quote...');
         const quote = await this.findById(id);
 
         return this.quotesRepository.remove(quote);
