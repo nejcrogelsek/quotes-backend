@@ -1,6 +1,6 @@
 import { IsAlphanumeric, IsNumber } from "class-validator";
 
-export class CreateQuoteDto{
+export class CreateQuoteDto {
     @IsAlphanumeric()
     message: string;
 
