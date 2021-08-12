@@ -1,6 +1,8 @@
 import { IsAlpha, IsEmail, IsNotEmpty, Matches, MinLength } from "class-validator";
 
 export class CreateUserDto {
+    profile_image: string;
+
     @IsNotEmpty()
     @IsEmail()
     email: string;
