@@ -1,9 +1,5 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
-<<<<<<< HEAD:src/modules/quotes/quotes.controller.ts
 import { Quote } from '../../entities/quote.entity';
-=======
-import { Quote } from 'src/entities/quote.entity';
->>>>>>> 6239f9f2fd072120822ea52254387b35abf5b8d5:src/quotes/quotes.controller.ts
 import { CreateQuoteDto } from './dto/create-quote.dto';
 import { QuotesService } from './quotes.service';
 
