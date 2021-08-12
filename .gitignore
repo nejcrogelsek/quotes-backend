@@ -37,7 +37,5 @@ lerna-debug.log*
 docker-compose.yml
 Dockerfile
 
-.env
-
 # ormconfig
 /ormconfig.ts
