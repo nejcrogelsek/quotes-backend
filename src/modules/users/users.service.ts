@@ -73,11 +73,14 @@ export class UsersService {
             }
         }
         const user = await this.findById(id);
-        if (updateUserDto.password === updateUserDto.password) {
+        if (updateUserDto.password === updateUserDto.confirm_password) {
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword: string = await bcrypt.hash(updateUserDto.password, salt);
+
             user.email = updateUserDto.email;
             user.first_name = updateUserDto.first_name;
             user.last_name = updateUserDto.last_name;
-            user.password = updateUserDto.password;
+            user.password = hashedPassword;
             const formattedDate = format(new Date(Date.now()), 'dd-MM-yyyy HH:mm:ss');
             user.updated_at = formattedDate;
 
