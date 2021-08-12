@@ -84,7 +84,10 @@ export class UsersService {
     async deleteUser(id: number): Promise<User> {
         this.logger.log('Deleting a user...');
         const user = await this.findById(id);
+        const quote = await this.quotesRepository.findOne({ user_id: id });
 
-        return this.usersRepository.remove(user);
+        const removedUser = this.usersRepository.remove(user);
+        await this.quotesRepository.remove(quote);
+        return removedUser;
     }
 }
