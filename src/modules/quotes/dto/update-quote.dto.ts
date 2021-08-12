@@ -3,7 +3,6 @@ import { IsAlphanumeric, IsNotEmpty, IsNumber, IsOptional } from "class-validato
 
 export class UpdateQuoteDto {
     @IsOptional()
-    @IsAlphanumeric()
     message: string;
 
     @IsOptional()
