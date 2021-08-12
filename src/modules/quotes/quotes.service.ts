@@ -23,15 +23,27 @@ export class QuotesService {
         return found;
     }
 
-    async updateQuote(id: number, updateQuoteDto: UpdateQuoteDto): Promise<Quote> {
+    async updateQuote(updateQuoteDto: UpdateQuoteDto): Promise<Quote> {
         this.logger.log('Updating a quote...');
-        const quote = await this.findById(id);
+        const quote = await this.quotesRepository.findOne({ user_id: updateQuoteDto.user_id });
         quote.message = updateQuoteDto.message;
         return this.quotesRepository.save(quote);
     }
 
+    async upVote(id: number): Promise<Quote> {
+        const quote = await this.quotesRepository.findOne({ user_id: id });
+        quote.votes++;
+        return this.quotesRepository.save(quote);
+    }
+
+    async downVote(id: number): Promise<Quote> {
+        const quote = await this.quotesRepository.findOne({ user_id: id });
+        quote.votes--;
+        return this.quotesRepository.save(quote);
+    }
+
     async deleteQuote(id: number): Promise<Quote> {
-        this.logger.log('Deleteing a quote...');
+        this.logger.log(`Deleteing a quote with id: ${id}`);
         const quote = await this.findById(id);
 
         return this.quotesRepository.remove(quote);

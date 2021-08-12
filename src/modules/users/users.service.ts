@@ -33,7 +33,7 @@ export class UsersService {
             const createdUser = this.usersRepository.create({ ...rest, password: hashedPassword, created_at: formattedDate, updated_at: formattedDate });
             const savedUser = await this.usersRepository.save(createdUser);
 
-            const quoteInfo = this.quotesRepository.create({ message: '' });
+            const quoteInfo = this.quotesRepository.create({ message: '', votes: 0 });
             quoteInfo.user_id = savedUser.id;
             await this.quotesRepository.save(quoteInfo);
 
@@ -65,9 +65,15 @@ export class UsersService {
     }
 
     async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-        this.logger.log('Updating a user...');
+        this.logger.log(`Updating a user with id: ${id}`);
+        if (updateUserDto.email !== undefined) {
+            const user = await this.usersRepository.findOne({ email: updateUserDto.email });
+            if (user && user.id !== id && updateUserDto.email === user.email) {
+                throw new BadRequestException(`User with email: ${updateUserDto.email} already exists.`)
+            }
+        }
+        const user = await this.findById(id);
         if (updateUserDto.password === updateUserDto.password) {
-            const user = await this.findById(id);
             user.email = updateUserDto.email;
             user.first_name = updateUserDto.first_name;
             user.last_name = updateUserDto.last_name;
@@ -82,7 +88,7 @@ export class UsersService {
     }
 
     async deleteUser(id: number): Promise<User> {
-        this.logger.log('Deleting a user...');
+        this.logger.log(`Deleting a user with id: ${id}`);
         const user = await this.findById(id);
         const quote = await this.quotesRepository.findOne({ user_id: id });
 
