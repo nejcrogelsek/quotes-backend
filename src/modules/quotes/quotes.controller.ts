@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
 import { Quote } from '../../entities/quote.entity';
-import { CreateQuoteDto } from './dto/create-quote.dto';
+import { UpdateQuoteDto } from './dto/update-quote.dto';
 import { QuotesService } from './quotes.service';
 
 @Controller('quotes')
@@ -12,9 +12,19 @@ export class QuotesController {
         return this.quotesService.findAll();
     }
 
-    @Post('/:id')
-    createQuote(@Param('id', ParseIntPipe) id: number, @Body() body: CreateQuoteDto): Promise<Quote> {
-        return this.quotesService.updateQuote(id, body);
+    @Post('/myquote')
+    updateQuote(@Body() body: UpdateQuoteDto): Promise<Quote> {
+        return this.quotesService.updateQuote(body);
+    }
+
+    @Post('/user/:id/upvote')
+    upVote(@Param('id', ParseIntPipe) id: number): Promise<Quote> {
+        return this.quotesService.upVote(id);
+    }
+
+    @Post('/user/:id/downvote')
+    downVote(@Param('id', ParseIntPipe) id: number): Promise<Quote> {
+        return this.quotesService.downVote(id);
     }
 
     @Delete('/:id')
