@@ -16,6 +16,9 @@ export class User {
     last_name: string;
 
     @Column()
+    profile_image: string;
+
+    @Column()
     password: string;
 
     @OneToOne(() => Quote, quoteInfo => quoteInfo.user)

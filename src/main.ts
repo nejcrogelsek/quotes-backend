@@ -10,6 +10,6 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(3000);
-  logger.log('Application is running on port: 3000');
+  logger.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();

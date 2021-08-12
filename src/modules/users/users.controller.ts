@@ -1,4 +1,6 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Patch, Post, Res, } from '@nestjs/common';
+import { Response } from 'express';
+import { generateUploadUrl } from '../../../s3'
 import { User } from '../../entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -31,5 +33,11 @@ export class UsersController {
     @Delete('/:id')
     deleteUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
         return this.usersService.deleteUser(id);
+    }
+
+    @Get('upload')
+    async uploadFile(@Res() res: Response) {
+        const url = await generateUploadUrl();
+        res.send({ url });
     }
 }
