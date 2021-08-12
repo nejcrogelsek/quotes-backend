@@ -9,7 +9,7 @@ export class AppController {
 
   @Get()
   getHello(): string {
-    return 'This is NestJS API for project Quoastic.'
+    return 'This is NestJS API for project Quotastic.'
   }
 
   @UseGuards(LocalAuthGuard)

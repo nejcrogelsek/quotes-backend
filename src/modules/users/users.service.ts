@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../entities/user.entity.js';
+import { User } from '../../entities/user.entity.js';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
-import { Quote } from '../entities/quote.entity.js';
+import { Quote } from '../../entities/quote.entity.js';
 import * as bcrypt from 'bcrypt';
 import { format } from 'date-fns';
 

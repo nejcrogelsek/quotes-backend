@@ -1,7 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { Quote } from 'src/entities/quote.entity';
-import { CreateQuoteDto } from './dto/create-quote';
+import { Quote } from '../../entities/quote.entity';
+import { CreateQuoteDto } from './dto/create-quote.dto';
 import { QuotesService } from './quotes.service';
 
 @Controller('quotes')
