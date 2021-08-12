@@ -6,11 +6,9 @@ export class UpdateUserDto {
     email: string;
 
     @IsOptional()
-    @IsAlpha()
     first_name: string;
 
     @IsOptional()
-    @IsAlpha()
     last_name: string;
 
     @IsOptional()

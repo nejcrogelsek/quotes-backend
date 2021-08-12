@@ -8,11 +8,9 @@ export class CreateUserDto {
     email: string;
 
     @IsNotEmpty()
-    @IsAlpha()
     first_name: string;
 
     @IsNotEmpty()
-    @IsAlpha()
     last_name: string;
 
     @IsNotEmpty()
