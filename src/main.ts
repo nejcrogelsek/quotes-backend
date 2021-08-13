@@ -4,7 +4,12 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const logger = new Logger();
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule, {
+    cors: {
+      credentials: true,
+      origin: ['http://localhost:3000'],
+    }
+  });
 
   // Validation pipe
   app.useGlobalPipes(new ValidationPipe());
