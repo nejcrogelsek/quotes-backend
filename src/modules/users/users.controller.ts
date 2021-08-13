@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Patch, Post, Res, } from '@nestjs/common';
 import { Response } from 'express';
+import { AuthReturnData } from 'src/interfaces/auth.interface';
 import { generateUploadUrl } from '../../../s3'
 import { User } from '../../entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -21,8 +22,9 @@ export class UsersController {
     }
 
     @Post('create')
-    createUser(@Body() body: CreateUserDto): Promise<User> {
-        return this.usersService.createUser(body);
+    createUser(@Body() body: CreateUserDto): Promise<AuthReturnData> {
+        const data = this.usersService.createUser(body);
+        return data;
     }
 
     @Patch('/:id')
