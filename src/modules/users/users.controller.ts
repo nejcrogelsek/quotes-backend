@@ -1,8 +1,9 @@
 import { Body, Controller, Delete, Get, Request, Param, ParseIntPipe, Patch, Post, Res, UseGuards, forwardRef, Inject, } from '@nestjs/common';
 import { Response } from 'express';
-import { AuthReturnData } from 'src/interfaces/auth.interface';
+import { AuthReturnData, UserDataFromToken } from 'src/interfaces/auth.interface';
 import { generateUploadUrl } from '../../../s3'
 import { User } from '../../entities/user.entity';
+import { JwtAuthGuard } from '../auth/auth-jwt.guard';
 import { AuthService } from '../auth/auth.service';
 import { LocalAuthGuard } from '../auth/local-auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -30,7 +31,7 @@ export class UsersController {
         return data;
     }
 
-    @Patch('/me/update-password')
+    @Patch('me/update-password')
     updateUser(@Body() body: UpdateUserDto): Promise<User> {
         return this.usersService.updateUser(body);
     }
@@ -61,5 +62,22 @@ export class UsersController {
             },
             access_token
         };
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('protected')
+    async me(@Request() req): Promise<UserDataFromToken> {
+        console.log(req.user);
+        let userInfo: UserDataFromToken = { id: null, email: null, first_name: null, last_name: null, profile_image: null };
+        await this.usersService.findById(req.user.id).then((res) => {
+            userInfo = {
+                id: res.id,
+                email: res.email,
+                first_name: res.first_name,
+                last_name: res.last_name,
+                profile_image: res.profile_image,
+            }
+        })
+        return userInfo;
     }
 }
