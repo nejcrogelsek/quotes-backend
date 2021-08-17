@@ -80,15 +80,15 @@ export class UsersService {
         return found;
     }
 
-    async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-        this.logger.log(`Updating a user with id: ${id}`);
+    async updateUser(updateUserDto: UpdateUserDto): Promise<User> {
+        this.logger.log(`Updating a user with id: ${updateUserDto.id}`);
         if (updateUserDto.email !== undefined) {
             const user = await this.usersRepository.findOne({ email: updateUserDto.email });
-            if (user && user.id !== id && updateUserDto.email === user.email) {
+            if (user && user.id !== updateUserDto.id && updateUserDto.email === user.email) {
                 throw new BadRequestException(`User with email: ${updateUserDto.email} already exists.`)
             }
         }
-        const user = await this.findById(id);
+        const user = await this.findById(updateUserDto.id);
         if (updateUserDto.password === updateUserDto.confirm_password) {
             const salt = await bcrypt.genSalt(10);
             const hashedPassword: string = await bcrypt.hash(updateUserDto.password, salt);

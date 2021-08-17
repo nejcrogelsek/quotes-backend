@@ -30,9 +30,9 @@ export class UsersController {
         return data;
     }
 
-    @Patch('/:id')
-    updateUser(@Body() body: UpdateUserDto, @Param('id', ParseIntPipe) id: number): Promise<User> {
-        return this.usersService.updateUser(id, body);
+    @Patch('/me/update-password')
+    updateUser(@Body() body: UpdateUserDto): Promise<User> {
+        return this.usersService.updateUser(body);
     }
 
     @Delete('/:id')
