@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, Logger, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../entities/user.entity.js';
 import { Repository } from 'typeorm';
@@ -7,18 +7,21 @@ import { UpdateUserDto } from './dto/update-user.dto.js';
 import { Quote } from '../../entities/quote.entity.js';
 import * as bcrypt from 'bcrypt';
 import { format } from 'date-fns';
+import { AuthService } from '../auth/auth.service.js';
+import { AuthReturnData } from 'src/interfaces/auth.interface.js';
 
 @Injectable()
 export class UsersService {
     private logger = new Logger();
     constructor(@InjectRepository(User) private usersRepository: Repository<User>,
-        @InjectRepository(Quote) private quotesRepository: Repository<Quote>) { };
+        @InjectRepository(Quote) private quotesRepository: Repository<Quote>,
+        @Inject(forwardRef(() => AuthService)) private readonly authService: AuthService) { };
 
     findAll(): Promise<User[]> {
         return this.usersRepository.find();
     }
 
-    async createUser(createUserDto: CreateUserDto): Promise<User> {
+    async createUser(createUserDto: CreateUserDto): Promise<AuthReturnData> {
         this.logger.log('Creating a user...');
         const user = await this.usersRepository.findOne({ email: createUserDto.email });
         if (user && createUserDto.email === user.email) {
@@ -37,7 +40,20 @@ export class UsersService {
             quoteInfo.user_id = savedUser.id;
             await this.quotesRepository.save(quoteInfo);
 
-            return savedUser;
+            const { access_token } = await this.authService.login(savedUser);
+
+            const { id, email, first_name, last_name, profile_image } = savedUser;
+
+            return {
+                user: {
+                    id,
+                    email,
+                    first_name,
+                    last_name,
+                    profile_image
+                },
+                access_token
+            };
         }
         else {
             throw new BadRequestException('Passwords do not match.');
@@ -64,15 +80,15 @@ export class UsersService {
         return found;
     }
 
-    async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-        this.logger.log(`Updating a user with id: ${id}`);
+    async updateUser(updateUserDto: UpdateUserDto): Promise<User> {
+        this.logger.log(`Updating a user with id: ${updateUserDto.id}`);
         if (updateUserDto.email !== undefined) {
             const user = await this.usersRepository.findOne({ email: updateUserDto.email });
-            if (user && user.id !== id && updateUserDto.email === user.email) {
+            if (user && user.id !== updateUserDto.id && updateUserDto.email === user.email) {
                 throw new BadRequestException(`User with email: ${updateUserDto.email} already exists.`)
             }
         }
-        const user = await this.findById(id);
+        const user = await this.findById(updateUserDto.id);
         if (updateUserDto.password === updateUserDto.confirm_password) {
             const salt = await bcrypt.genSalt(10);
             const hashedPassword: string = await bcrypt.hash(updateUserDto.password, salt);
