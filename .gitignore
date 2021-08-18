@@ -41,5 +41,6 @@ Dockerfile
 /ormconfig.ts
 
 .env
+.development.env
 
 db

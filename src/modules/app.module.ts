@@ -5,27 +5,33 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { QuotesModule } from './quotes/quotes.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import config from '../../ormconfig';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: [`.env.stage.${process.env.STAGE}`],
     }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.POSTGRES_HOST,
-      port: 5432,
-      username: process.env.POSTGRES_USER,
-      password: process.env.POSTGRES_PASSWORD,
-      database: process.env.DATABASE_DB,
-      name: 'DatabaseConnection',
-      entities: ['dist/src/**/*.entity.js'],
-      synchronize: true, // only for development
-      migrations: ['dist/src/db/migrations/*.js'],
-      cli: {
-        migrationsDir: 'src/db/migrations'
-      }
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get('POSTGRES_HOST'),
+        port: 5432,
+        username: configService.get('POSTGRES_USER'),
+        password: configService.get('POSTGRES_PASSWORD'),
+        database: configService.get('POSTGRES_DB'),
+        // entities: ['dist/src/**/*.entity.js'],
+        autoLoadEntities: true,
+        synchronize: true,
+        // migrations: ['dist/src/db/migrations/*.js'],
+        // cli: {
+        //   migrationsDir: 'src/db/migrations'
+        // }
+      }),
     }),
     UsersModule,
     AuthModule,
