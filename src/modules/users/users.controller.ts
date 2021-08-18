@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Request, Param, ParseIntPipe, Patch, Post, Res, UseGuards, forwardRef, Inject, } from '@nestjs/common';
 import { Response } from 'express';
-import { AuthReturnData, UserDataFromToken } from 'src/interfaces/auth.interface';
+import { AuthReturnData, UserDataFromToken } from '../../interfaces/auth.interface';
 import { generateUploadUrl } from '../../../s3'
 import { User } from '../../entities/user.entity';
 import { JwtAuthGuard } from '../auth/auth-jwt.guard';

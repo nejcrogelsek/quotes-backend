@@ -8,7 +8,7 @@ import { Quote } from '../../entities/quote.entity.js';
 import * as bcrypt from 'bcrypt';
 import { format } from 'date-fns';
 import { AuthService } from '../auth/auth.service.js';
-import { AuthReturnData } from 'src/interfaces/auth.interface.js';
+import { AuthReturnData } from '../../interfaces/auth.interface';
 
 @Injectable()
 export class UsersService {
