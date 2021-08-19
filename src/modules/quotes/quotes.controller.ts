@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
 import { Quote } from '../../entities/quote.entity';
 import { UpdateQuoteDto } from './dto/update-quote.dto';
 import { QuotesService } from './quotes.service';
@@ -12,7 +12,7 @@ export class QuotesController {
         return this.quotesService.findAll();
     }
 
-    @Post('/myquote')
+    @Patch('/myquote')
     updateQuote(@Body() body: UpdateQuoteDto): Promise<Quote> {
         return this.quotesService.updateQuote(body);
     }
