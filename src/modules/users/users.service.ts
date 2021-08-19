@@ -36,8 +36,8 @@ export class UsersService {
             const createdUser = this.usersRepository.create({ ...rest, password: hashedPassword, created_at: formattedDate, updated_at: formattedDate });
             const savedUser = await this.usersRepository.save(createdUser);
 
-            const quoteInfo = this.quotesRepository.create({ message: '', votes: 0 });
-            quoteInfo.user_id = savedUser.id;
+            const quoteInfo = this.quotesRepository.create({ message: '', votes: [] });
+            quoteInfo.user = savedUser;
             await this.quotesRepository.save(quoteInfo);
 
             const { access_token } = await this.authService.login(savedUser);
@@ -108,10 +108,9 @@ export class UsersService {
 
     async deleteUser(id: number): Promise<User> {
         this.logger.log(`Deleting a user with id: ${id}`);
-        const user = await this.findById(id);
-        const quote = await this.quotesRepository.findOne({ user_id: id });
-
-        const removedUser = this.usersRepository.remove(user);
+        const user: User = await this.findById(id);
+        const quote: Quote = await this.quotesRepository.findOne({ user: user });
+        const removedUser = await this.usersRepository.remove(user);
         await this.quotesRepository.remove(quote);
         return removedUser;
     }

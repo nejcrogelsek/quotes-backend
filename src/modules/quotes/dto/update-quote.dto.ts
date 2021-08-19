@@ -1,4 +1,4 @@
-import { IsAlphanumeric, IsNumber } from "class-validator";
+import { IsNumber } from "class-validator";
 
 export class UpdateQuoteDto {
     message: string;

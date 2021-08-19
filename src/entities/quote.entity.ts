@@ -1,6 +1,7 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { User } from './user.entity';
 import { format } from 'date-fns';
+import { Vote } from './vote.entity';
 @Entity()
 export class Quote {
     @PrimaryGeneratedColumn()
@@ -9,11 +10,8 @@ export class Quote {
     @Column()
     message: string;
 
-    @Column()
-    votes: number;
-
-    @Column()
-    user_id: number;
+    @OneToMany(() => Vote, vote => vote.vote)
+    votes: Vote[];
 
     @OneToOne(() => User, user => user.quote_info, { onDelete: 'CASCADE' })
     @JoinColumn()

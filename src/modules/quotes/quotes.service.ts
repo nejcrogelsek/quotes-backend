@@ -3,12 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Quote } from '../../entities/quote.entity';
 import { Repository } from 'typeorm';
 import { UpdateQuoteDto } from './dto/update-quote.dto';
+import { User } from '../../entities/user.entity';
 
 @Injectable()
 export class QuotesService {
     private logger = new Logger();
     constructor(
         @InjectRepository(Quote) private quotesRepository: Repository<Quote>,
+        @InjectRepository(User) private usersRepository: Repository<User>
     ) { }
 
     findAll(): Promise<Quote[]> {
@@ -25,25 +27,30 @@ export class QuotesService {
 
     async updateQuote(updateQuoteDto: UpdateQuoteDto): Promise<Quote> {
         this.logger.log('Updating a quote...');
-        const quote = await this.quotesRepository.findOne({ user_id: updateQuoteDto.user_id });
+        const user = await this.usersRepository.findOne({ id: updateQuoteDto.user_id });
+        const quote = await this.quotesRepository.findOne({ user: user });
         quote.message = updateQuoteDto.message;
         return this.quotesRepository.save(quote);
     }
 
     async upVote(id: number): Promise<Quote> {
-        const quote = await this.quotesRepository.findOne({ user_id: id });
-        quote.votes++;
+        const user = await this.usersRepository.findOne({ id: id });
+        const quote = await this.quotesRepository.findOne({ user: user });
+        //const user = await this.usersRepository.findOne({ id: id });
+        //quote.votes = [...quote.votes, user]
         return this.quotesRepository.save(quote);
     }
 
     async downVote(id: number): Promise<Quote> {
-        const quote = await this.quotesRepository.findOne({ user_id: id });
-        quote.votes--;
+        const user = await this.usersRepository.findOne({ id: id });
+        const quote = await this.quotesRepository.findOne({ user: user });
+        //quote.votes--;
         return this.quotesRepository.save(quote);
     }
 
     async getUserQuote(id: number): Promise<Quote> {
-        const quote = await this.quotesRepository.findOne({ user_id: id });
+        const user = await this.usersRepository.findOne({ id: id });
+        const quote = await this.quotesRepository.findOne({ user: user });
         if (quote) {
             return quote;
         } else {
