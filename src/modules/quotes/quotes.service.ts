@@ -42,6 +42,15 @@ export class QuotesService {
         return this.quotesRepository.save(quote);
     }
 
+    async getUserQuote(id: number): Promise<Quote> {
+        const quote = await this.quotesRepository.findOne({ user_id: id });
+        if (quote) {
+            return quote;
+        } else {
+            throw new NotFoundException(`Quote with user_id: ${id} does not exists.`);
+        }
+    }
+
     async deleteQuote(id: number): Promise<Quote> {
         this.logger.log(`Deleteing a quote with id: ${id}`);
         const quote = await this.findById(id);

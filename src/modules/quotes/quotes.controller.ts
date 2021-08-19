@@ -27,6 +27,11 @@ export class QuotesController {
         return this.quotesService.downVote(id);
     }
 
+    @Get('/:id')
+    getUserQuote(@Param('id', ParseIntPipe) id: number): Promise<Quote> {
+        return this.quotesService.getUserQuote(id);
+    }
+
     @Delete('/:id')
     deleteQuote(@Param('id', ParseIntPipe) id: number): Promise<Quote> {
         return this.quotesService.deleteQuote(id);
