@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { QuotesModule } from './quotes/quotes.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { VotesModule } from './votes/votes.module';
 
 @Module({
   imports: [
@@ -29,7 +30,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     }),
     UsersModule,
     AuthModule,
-    QuotesModule
+    QuotesModule,
+    VotesModule
   ],
   controllers: [AppController],
   providers: [AppService],

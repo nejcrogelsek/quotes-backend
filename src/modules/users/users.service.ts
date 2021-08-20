@@ -109,9 +109,6 @@ export class UsersService {
     async deleteUser(id: number): Promise<User> {
         this.logger.log(`Deleting a user with id: ${id}`);
         const user: User = await this.findById(id);
-        const quote: Quote = await this.quotesRepository.findOne({ user: user });
-        const removedUser = await this.usersRepository.remove(user);
-        await this.quotesRepository.remove(quote);
-        return removedUser;
+        return this.usersRepository.remove(user);
     }
 }
