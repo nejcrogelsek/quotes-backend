@@ -10,10 +10,10 @@ export class Quote {
     @Column()
     message: string;
 
-    @OneToMany(() => Vote, vote => vote.vote)
+    @OneToMany(() => Vote, vote => vote.vote, { onDelete: 'CASCADE' })
     votes: Vote[];
 
-    @OneToOne(() => User, user => user.quote_info, { onDelete: 'CASCADE' })
+    @OneToOne(() => User, user => user.quote_info, { onDelete: 'CASCADE', nullable: false })
     @JoinColumn()
     user: User;
 

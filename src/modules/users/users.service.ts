@@ -36,7 +36,7 @@ export class UsersService {
             const createdUser = this.usersRepository.create({ ...rest, password: hashedPassword, created_at: formattedDate, updated_at: formattedDate });
             const savedUser = await this.usersRepository.save(createdUser);
 
-            const quoteInfo = this.quotesRepository.create({ message: '', votes: [] });
+            const quoteInfo = this.quotesRepository.create({ message: '', votes: [], user: savedUser });
             quoteInfo.user = savedUser;
             await this.quotesRepository.save(quoteInfo);
 

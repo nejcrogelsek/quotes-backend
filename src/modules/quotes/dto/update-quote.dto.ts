@@ -1,8 +1,7 @@
-import { IsNumber } from "class-validator";
+import { User } from "../../../entities/user.entity";
 
 export class UpdateQuoteDto {
     message: string;
 
-    @IsNumber()
-    user_id: number;
+    user: User;
 }

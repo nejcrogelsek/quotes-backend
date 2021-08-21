@@ -14,7 +14,7 @@ export class QuotesService {
     ) { }
 
     findAll(): Promise<Quote[]> {
-        return this.quotesRepository.find();
+        return this.quotesRepository.find({ relations: ['user'] });
     }
 
     async findById(id: number): Promise<Quote> {
@@ -27,7 +27,7 @@ export class QuotesService {
 
     async updateQuote(updateQuoteDto: UpdateQuoteDto): Promise<Quote> {
         this.logger.log('Updating a quote...');
-        const user = await this.usersRepository.findOne({ id: updateQuoteDto.user_id });
+        const user = await this.usersRepository.findOne({ id: updateQuoteDto.user.id });
         const quote = await this.quotesRepository.findOne({ user: user });
         quote.message = updateQuoteDto.message;
         return this.quotesRepository.save(quote);
