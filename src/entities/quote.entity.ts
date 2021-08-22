@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { User } from './user.entity';
 import { format } from 'date-fns';
 import { Vote } from './vote.entity';
@@ -10,10 +10,13 @@ export class Quote {
     @Column()
     message: string;
 
-    @OneToMany(() => Vote, vote => vote.vote, { onDelete: 'CASCADE' })
+    @ManyToOne(() => Quote, quote => quote.votes, { onDelete: 'CASCADE' })
+    manager: Quote;
+
+    @OneToMany(() => Vote, vote => vote.vote)
     votes: Vote[];
 
-    @OneToOne(() => User, user => user.quote_info, { onDelete: 'CASCADE', nullable: false })
+    @OneToOne(() => User, user => user.quote_info, { onDelete: 'CASCADE' })
     @JoinColumn()
     user: User;
 

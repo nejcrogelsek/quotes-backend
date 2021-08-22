@@ -12,6 +12,6 @@ export class Vote {
     @Column()
     user_id: number;
 
-    @ManyToOne(() => Quote, vote => vote.votes)
+    @ManyToOne(() => Quote, quote => quote.votes, { onDelete: 'CASCADE' })
     vote: Quote;
 }

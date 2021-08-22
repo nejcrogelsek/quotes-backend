@@ -14,7 +14,7 @@ export class QuotesService {
     ) { }
 
     findAll(): Promise<Quote[]> {
-        return this.quotesRepository.find({ relations: ['user'] });
+        return this.quotesRepository.find({ relations: ['user', 'votes'] });
     }
 
     async findById(id: number): Promise<Quote> {
@@ -50,7 +50,7 @@ export class QuotesService {
 
     async getUserQuote(id: number): Promise<Quote> {
         const user = await this.usersRepository.findOne({ id: id });
-        const quote = await this.quotesRepository.findOne({ user: user }, { relations: ['user'] });
+        const quote = await this.quotesRepository.findOne({ user: user }, { relations: ['user', 'votes'] });
         if (quote) {
             return quote;
         } else {
