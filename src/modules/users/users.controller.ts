@@ -64,6 +64,14 @@ export class UsersController {
         };
     }
 
+    @Post('refresh-token')
+    async refreshToken(@Body() body): Promise<{ access_token: string }> {
+        const { access_token } = await this.authService.refreshToken(body);
+        return {
+            access_token
+        };
+    }
+
     @UseGuards(JwtAuthGuard)
     @Get('protected')
     async me(@Request() req): Promise<UserDataFromToken> {
