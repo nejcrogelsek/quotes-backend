@@ -50,7 +50,7 @@ export class QuotesService {
 
     async getUserQuote(id: number): Promise<Quote> {
         const user = await this.usersRepository.findOne({ id: id });
-        const quote = await this.quotesRepository.findOne({ user: user });
+        const quote = await this.quotesRepository.findOne({ user: user }, { relations: ['user'] });
         if (quote) {
             return quote;
         } else {
