@@ -11,6 +11,14 @@ export class QuotesController {
     getQuotes(): Promise<Quote[]> {
         return this.quotesService.findAll();
     }
+    @Get('/recent')
+    getRecentQuotes(): Promise<Quote[]> {
+        return this.quotesService.findRecent();
+    }
+    @Get('/liked')
+    getLikedQuotes(): Promise<Quote[]> {
+        return this.quotesService.findLiked();
+    }
 
     @Patch('/myquote')
     updateQuote(@Body() body: UpdateQuoteDto): Promise<Quote> {

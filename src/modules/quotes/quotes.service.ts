@@ -17,6 +17,21 @@ export class QuotesService {
         return this.quotesRepository.find({ relations: ['user', 'votes'] });
     }
 
+    findRecent(): Promise<Quote[]> {
+        return this.quotesRepository.find({ relations: ['user', 'votes'], order: { 'created_at': 'ASC' } });
+    }
+
+    async findLiked(): Promise<Quote[]> {
+        return this.quotesRepository
+            .createQueryBuilder('quote')
+            .leftJoin('quote.votes', 'votes')
+            .addSelect("COUNT(quote.votes) AS total_votes")
+            .orderBy('total_votes', 'ASC') //or DESC
+            .groupBy("quote.votes")
+            .getRawMany()
+        //return this.quotesRepository.find({ relations: ['user', 'votes'], order: { 'id': 'DESC' } });
+    }
+
     async findById(id: number): Promise<Quote> {
         const found = await this.quotesRepository.findOne(id);
         if (!found) {
