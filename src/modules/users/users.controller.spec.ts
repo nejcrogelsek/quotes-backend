@@ -1,4 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 
@@ -6,13 +8,13 @@ describe('UsersController', () => {
   let controller: UsersController;
 
   const mockUserService = {
-    createUser: jest.fn(dto => {
+    createUser: jest.fn((dto: CreateUserDto) => {
       return {
         id: expect.any(Number),
         ...dto,
       }
     }),
-    updateUser: jest.fn((dto) => ({
+    updateUser: jest.fn((dto: UpdateUserDto) => ({
       id: expect.any(Number),
       email: expect.any(String),
       first_name: expect.any(String),
@@ -38,7 +40,7 @@ describe('UsersController', () => {
   });
 
   it('should create a user', () => {
-    const dto = {
+    const dto: CreateUserDto = {
       profile_image: 'undefined',
       email: 'mockUser@gmail.com',
       first_name: 'Mock',
@@ -61,7 +63,7 @@ describe('UsersController', () => {
   })
 
   it('should update a user', () => {
-    const dto = {
+    const dto: UpdateUserDto = {
       id: 14,
       email: 'neki@gmail.com',
       first_name: 'Mock Updated',
