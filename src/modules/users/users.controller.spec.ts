@@ -1,4 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { AuthReturnData } from '../../interfaces/auth.interface';
+import { IUser } from '../../interfaces/user.interface';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersController } from './users.controller';
@@ -8,22 +10,30 @@ describe('UsersController', () => {
   let controller: UsersController;
 
   const mockUserService = {
-    createUser: jest.fn((dto: CreateUserDto) => {
+    createUser: jest.fn((dto: CreateUserDto): AuthReturnData => {
+      const { email, first_name, last_name, profile_image } = dto;
       return {
-        id: expect.any(Number),
-        ...dto,
+        user: {
+          id: expect.any(Number),
+          email: email,
+          first_name: first_name,
+          last_name: last_name,
+          profile_image: profile_image
+        },
+        access_token: expect.any(String)
       }
     }),
-    updateUser: jest.fn((dto: UpdateUserDto) => ({
-      id: expect.any(Number),
-      email: expect.any(String),
-      first_name: expect.any(String),
-      last_name: expect.any(String),
-      profile_image: expect.any(String),
-      password: expect.any(String),
-      created_at: expect.any(String),
-      updated_at: expect.any(String)
-    }))
+    updateUser: jest.fn((dto: UpdateUserDto): IUser => {
+      const { confirm_password, id, password, ...rest } = dto
+      return {
+        id: id,
+        ...rest,
+        profile_image: expect.any(String),
+        password: expect.any(String),
+        created_at: expect.any(String),
+        updated_at: expect.any(String)
+      }
+    })
   }
 
   beforeEach(async () => {
