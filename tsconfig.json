@@ -13,4 +13,9 @@
     "incremental": true,
     "skipLibCheck": true
   },
+  "typeAcquisition": {
+    "include": [
+      "jest", // provides VS Code autocomplete
+    ]
+  }
 }

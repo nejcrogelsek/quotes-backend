@@ -15,11 +15,6 @@ export class UsersController {
     constructor(private usersService: UsersService,
         @Inject(forwardRef(() => AuthService)) private readonly authService: AuthService) { }
 
-    @Get('/find-by-email')
-    test(@Body() body: { email: string }): Promise<User> {
-        return this.usersService.findByEmail(body.email);
-    }
-
     @Get()
     getUsers(): Promise<User[]> {
         return this.usersService.findAll();
