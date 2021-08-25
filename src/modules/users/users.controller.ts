@@ -20,7 +20,7 @@ export class UsersController {
         return this.usersService.findAll();
     }
 
-    @Post('create')
+    @Post('signup')
     createUser(@Body() body: CreateUserDto): Promise<AuthReturnData> {
         const data = this.usersService.createUser(body);
         return data;
