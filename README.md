@@ -69,9 +69,11 @@ $ yarn run start:prod
 ```bash
 # unit tests
 $ yarn run test
+$ yarn run test:watch
 
 # e2e tests
 $ yarn run test:e2e
+$ yarn run test:e2e:watch
 
 # test coverage
 $ yarn run test:cov
