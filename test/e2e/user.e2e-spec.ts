@@ -5,8 +5,8 @@ import { UsersModule } from '../../src/modules/users/users.module';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from '../../src/entities/user.entity.js';
 import { UserData } from '../../src/interfaces/user.interface';
-import { AuthReturnData } from 'src/interfaces/auth.interface';
-import { CreateUserDto } from 'src/modules/users/dto/create-user.dto';
+import { AuthReturnData } from '../../src/interfaces/auth.interface';
+import { CreateUserDto } from '../../src/modules/users/dto/create-user.dto';
 
 describe('UserController (e2e)', () => {
     let app: INestApplication;
