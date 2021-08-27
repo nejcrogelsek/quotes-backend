@@ -21,14 +21,19 @@ export class QuotesService {
         return this.quotesRepository.find({ relations: ['user', 'votes'], order: { 'created_at': 'ASC' } });
     }
 
-    async findLiked(): Promise<Quote[]> {
-        return this.quotesRepository
+    async findLiked(): Promise<any> {
+        return this.quotesRepository.createQueryBuilder('quote')
+            .leftJoinAndSelect('quote.votes', 'vote')
+            .where('vote.id IS NOT NULL')
+            .orderBy('')
+            .getMany()
+        /*return this.quotesRepository
             .createQueryBuilder('quote')
             .leftJoin('quote.votes', 'votes')
             .addSelect("COUNT(quote.votes) AS total_votes")
             .orderBy('total_votes', 'ASC') //or DESC
             .groupBy("quote.votes")
-            .getRawMany()
+            .getRawMany()*/
         //return this.quotesRepository.find({ relations: ['user', 'votes'], order: { 'id': 'DESC' } });
     }
 

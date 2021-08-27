@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Quote } from 'src/entities/quote.entity';
+import { Quote } from '../../entities/quote.entity';
 import { Repository } from 'typeorm';
 import { Vote } from '../../entities/vote.entity';
 import { CreateRemoveVoteDto } from './dto/create-remove-vote.dto';

@@ -3,10 +3,11 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { UsersModule } from '../../src/modules/users/users.module';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from '../../src/entities/user.entity.js';
+import { User } from '../../src/entities/user.entity';
 import { UserData } from '../../src/interfaces/user.interface';
 import { AuthReturnData } from '../../src/interfaces/auth.interface';
 import { CreateUserDto } from '../../src/modules/users/dto/create-user.dto';
+import { Quote } from '../../src/entities/quote.entity';
 
 describe('UserController (e2e)', () => {
     let app: INestApplication;
@@ -36,6 +37,8 @@ describe('UserController (e2e)', () => {
         }),
         save: jest.fn().mockImplementation(user => Promise.resolve({ id: expect.any(Number), ...user }))
     };
+
+    const mockQuotesRepository = {}
 
     beforeEach(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -103,4 +106,6 @@ describe('UserController (e2e)', () => {
                 error: 'Bad Request'
             });
     });
+
+
 });

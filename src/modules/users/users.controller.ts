@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Request, Param, ParseIntPipe, Patch, Pos
 import { Response } from 'express';
 import { AuthReturnData, UserDataFromToken } from '../../interfaces/auth.interface';
 import { generateUploadUrl } from '../../../s3'
-import { User } from '../../entities/user.entity.js';
+import { User } from '../../entities/user.entity';
 import { JwtAuthGuard } from '../auth/auth-jwt.guard';
 import { AuthService } from '../auth/auth.service';
 import { LocalAuthGuard } from '../auth/local-auth.guard';

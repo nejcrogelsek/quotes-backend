@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersModule } from '../users/users.module';
 import { Quote } from '../../entities/quote.entity';
 import { QuotesController } from './quotes.controller';
 import { QuotesService } from './quotes.service';
-import { User } from 'src/entities/user.entity';
-import { Vote } from 'src/entities/vote.entity';
+import { User } from '../../entities/user.entity';
+import { Vote } from '../../entities/vote.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Quote, User, Vote])],

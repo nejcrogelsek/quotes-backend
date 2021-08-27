@@ -1,13 +1,13 @@
 import { BadRequestException, Injectable, NotFoundException, Logger, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../../entities/user.entity.js';
+import { User } from '../../entities/user.entity';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto.js';
-import { UpdateUserDto } from './dto/update-user.dto.js';
-import { Quote } from '../../entities/quote.entity.js';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { Quote } from '../../entities/quote.entity';
 import * as bcrypt from 'bcrypt';
 import { format } from 'date-fns';
-import { AuthService } from '../auth/auth.service.js';
+import { AuthService } from '../auth/auth.service';
 import { AuthReturnData } from '../../interfaces/auth.interface';
 
 @Injectable()
