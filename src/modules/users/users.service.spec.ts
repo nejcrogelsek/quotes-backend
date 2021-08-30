@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { AuthReturnData } from 'src/interfaces/auth.interface';
+import { AuthReturnData } from '../../interfaces/auth.interface';
 import { User } from '../../entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';

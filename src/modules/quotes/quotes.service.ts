@@ -4,6 +4,7 @@ import { Quote } from '../../entities/quote.entity';
 import { Repository } from 'typeorm';
 import { UpdateQuoteDto } from './dto/update-quote.dto';
 import { User } from '../../entities/user.entity';
+import { format } from 'date-fns';
 
 @Injectable()
 export class QuotesService {
@@ -18,7 +19,7 @@ export class QuotesService {
     }
 
     findRecent(): Promise<Quote[]> {
-        return this.quotesRepository.find({ relations: ['user', 'votes'], order: { 'created_at': 'ASC' } });
+        return this.quotesRepository.find({ relations: ['user', 'votes'], order: { 'updated_at': 'DESC' } });
     }
 
     async findLiked(): Promise<any> {
@@ -49,7 +50,9 @@ export class QuotesService {
         this.logger.log('Updating a quote...');
         const user = await this.usersRepository.findOne({ id: updateQuoteDto.user.id });
         const quote = await this.quotesRepository.findOne({ user: user });
+        const formattedDate = format(new Date(Date.now()), 'dd-MM-yyyy HH:mm:ss');
         quote.message = updateQuoteDto.message;
+        quote.updated_at = formattedDate;
         return this.quotesRepository.save(quote);
     }
 

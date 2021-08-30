@@ -1,4 +1,4 @@
-import { UserData } from "src/interfaces/user.interface";
+import { UserData } from "../../../interfaces/user.interface";
 
 export class UpdateQuoteDto {
     message: string;

@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { UsersModule } from '../../src/modules/users/users.module';
-import { getRepositoryToken } from '@nestjs/typeorm';
+import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../../src/entities/user.entity';
 import { UserData } from '../../src/interfaces/user.interface';
 import { AuthReturnData } from '../../src/interfaces/auth.interface';
@@ -42,8 +42,21 @@ describe('UserController (e2e)', () => {
 
     beforeEach(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
-            imports: [UsersModule],
-        }).overrideProvider(getRepositoryToken(User)).useValue(mockUsersRepository).compile();
+            imports: [
+                UsersModule,
+
+            ],
+            providers: [
+                {
+                    provide: getRepositoryToken(User),
+                    useValue: mockUsersRepository
+                },
+                {
+                    provide: getRepositoryToken(Quote),
+                    useValue: mockQuotesRepository
+                }
+            ],
+        }).compile();
 
         app = moduleFixture.createNestApplication();
         // Validation Pipe
@@ -51,61 +64,22 @@ describe('UserController (e2e)', () => {
         await app.init();
     });
 
-    it('/users (GET)', () => {
+    it('/users/test (GET)', async () => {
         return request(app.getHttpServer())
-            .get('/users')
-            .expect('Content-Type', /json/)
+            .get('/users/test')
             .expect(200)
-            .expect(mockUsers);
+            .expect('This is test');
     });
 
-    it('/users/create (POST)', () => {
-        const dto: CreateUserDto = {
-            profile_image: 'undefined',
-            email: 'mockUser@gmail.com',
-            first_name: 'Mock',
-            last_name: 'User',
-            password: 'Mock123!',
-            confirm_password: 'Mock123!'
-        };
+    it('/users/test (GET) --> 400 on validation error', async () => {
         return request(app.getHttpServer())
             .post('/users/create')
-            .send(dto)
-            .expect('Content-Type', /json/)
-            .expect(201)
-            .then(res => {
-                expect(res.body).toEqual({
-                    user: {
-                        id: expect.any(Number),
-                        email: 'mockUser@gmail.com',
-                        first_name: 'Mock',
-                        last_name: 'User',
-                        profile_image: 'undefined'
-                    },
-                    access_token: expect.any(String)
-                })
-            });
-    });
-
-    it('/users/create (POST) --> 400 on validation error', () => {
-        const dto = {
-            profile_image: 123,
-            email: 'mockUser@gmail.com',
-            first_name: 'Mock',
-            last_name: 'User',
-            password: 'Mock123!',
-            confirm_password: 'Mock123!'
-        };
-        return request(app.getHttpServer())
-            .post('/users/create')
-            .send(dto)
             .expect('Content-Type', /json/)
             .expect(400, {
                 statusCode: 400,
-                message: 'Error creating a user',
+                message: 'Error testing',
                 error: 'Bad Request'
             });
     });
-
 
 });
