@@ -48,6 +48,7 @@ Full-stack application that will allow the user to register, write one paragraph
 Clone this repository and run:
 
 ```bash
+# install dependencies
 $ yarn install
 ```
 
@@ -75,6 +76,7 @@ $ yarn run start:prod
 $ yarn run test
 ```
 ```bash
+# watch mode
 $ yarn run test:watch
 ```
 ```bash
@@ -82,6 +84,7 @@ $ yarn run test:watch
 $ yarn run test:e2e
 ```
 ```bash
+# e2e tests - watch mode
 $ yarn run test:e2e:watch
 ```
 ```bash
