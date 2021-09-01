@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Request, Param, ParseIntPipe, Patch, Post, Res, UseGuards, forwardRef, Inject, } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Request, Param, ParseIntPipe, Patch, Post, Res, UseGuards, forwardRef, Inject, UnauthorizedException, BadRequestException, } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthReturnData, UserDataFromToken } from '../../interfaces/auth.interface';
 import { generateUploadUrl } from '../../../s3'
@@ -43,8 +43,13 @@ export class UsersController {
 
     @Get('upload')
     async uploadFile(@Res() res: Response) {
-        const url = await generateUploadUrl();
-        res.send({ url });
+        try {
+            const url = await generateUploadUrl();
+            res.send({ url });
+        } catch (err) {
+            console.log(err.message);
+            throw new BadRequestException();
+        }
     }
 
     @UseGuards(LocalAuthGuard)
@@ -66,26 +71,35 @@ export class UsersController {
 
     @Post('refresh-token')
     async refreshToken(@Body() body): Promise<{ access_token: string }> {
-        const { access_token } = await this.authService.refreshToken(body);
-        return {
-            access_token
-        };
+        try {
+            const { access_token } = await this.authService.refreshToken(body);
+            return {
+                access_token
+            };
+        } catch (err) {
+            console.log(err.message);
+            throw new BadRequestException();
+        }
     }
 
     @UseGuards(JwtAuthGuard)
     @Get('protected')
     async me(@Request() req): Promise<UserDataFromToken> {
-        console.log(req.user);
-        let userInfo: UserDataFromToken = { id: null, email: null, first_name: null, last_name: null, profile_image: null };
-        await this.usersService.findById(req.user.id).then((res) => {
-            userInfo = {
-                id: res.id,
-                email: res.email,
-                first_name: res.first_name,
-                last_name: res.last_name,
-                profile_image: res.profile_image,
-            }
-        })
-        return userInfo;
+        try {
+            let userInfo: UserDataFromToken = { id: null, email: null, first_name: null, last_name: null, profile_image: null };
+            await this.usersService.findById(req.user.id).then((res) => {
+                userInfo = {
+                    id: res.id,
+                    email: res.email,
+                    first_name: res.first_name,
+                    last_name: res.last_name,
+                    profile_image: res.profile_image,
+                }
+            })
+            return userInfo;
+        } catch (err) {
+            console.log(err.message);
+            throw new UnauthorizedException()
+        }
     }
 }

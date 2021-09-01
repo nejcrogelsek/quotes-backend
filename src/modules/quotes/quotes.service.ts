@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, Logger } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Quote } from '../../entities/quote.entity';
 import { Repository } from 'typeorm';
@@ -14,28 +14,40 @@ export class QuotesService {
         @InjectRepository(User) private usersRepository: Repository<User>
     ) { }
 
-    findAll(): Promise<Quote[]> {
-        return this.quotesRepository.find({ relations: ['user', 'votes'] });
+    async findAll(): Promise<Quote[]> {
+        try {
+            return this.quotesRepository.find({ relations: ['user', 'votes'] });
+        } catch (err) {
+            console.log(err.message);
+            throw new BadRequestException('Error while searching for users.');
+        } finally {
+            this.logger.log('Searching for quotes.');
+        }
     }
 
     findRecent(): Promise<Quote[]> {
-        return this.quotesRepository.find({ relations: ['user', 'votes'], order: { 'updated_at': 'DESC' } });
+        try {
+            return this.quotesRepository.find({ relations: ['user', 'votes'], order: { 'updated_at': 'DESC' } });
+        } catch (err) {
+            console.log(err.message);
+            throw new BadRequestException('Error while searching for most recent quotes.');
+        } finally {
+            this.logger.log('Searching for most recent quotes.');
+        }
     }
 
-    async findLiked(): Promise<any> {
-        return this.quotesRepository.createQueryBuilder('quote')
-            .leftJoinAndSelect('quote.votes', 'vote')
-            .where('vote.id IS NOT NULL')
-            .orderBy('')
-            .getMany()
-        /*return this.quotesRepository
-            .createQueryBuilder('quote')
-            .leftJoin('quote.votes', 'votes')
-            .addSelect("COUNT(quote.votes) AS total_votes")
-            .orderBy('total_votes', 'ASC') //or DESC
-            .groupBy("quote.votes")
-            .getRawMany()*/
-        //return this.quotesRepository.find({ relations: ['user', 'votes'], order: { 'id': 'DESC' } });
+    async findLiked(): Promise<Quote[]> {
+        try {
+            return this.quotesRepository.find({ relations: ['user', 'votes'], order: { 'updated_at': 'DESC' } });
+        } catch (err) {
+            console.log(err.message);
+            throw new BadRequestException('Error while searching for most liked quotes.');
+        } finally {
+            this.logger.log('Searching for most liked quotes.');
+        }
+        //return this.quotesRepository.createQueryBuilder('quote')
+        //  .leftJoinAndSelect('quote.votes', 'vote')
+        //  .getMany()
     }
 
     async findById(id: number): Promise<Quote> {
@@ -47,44 +59,69 @@ export class QuotesService {
     }
 
     async updateQuote(updateQuoteDto: UpdateQuoteDto): Promise<Quote> {
-        this.logger.log('Updating a quote...');
-        const user = await this.usersRepository.findOne({ id: updateQuoteDto.user.id });
-        const quote = await this.quotesRepository.findOne({ user: user });
-        const formattedDate = format(new Date(Date.now()), 'dd-MM-yyyy HH:mm:ss');
-        quote.message = updateQuoteDto.message;
-        quote.updated_at = formattedDate;
-        return this.quotesRepository.save(quote);
+        try {
+            const user = await this.usersRepository.findOne({ id: updateQuoteDto.user.id });
+            const quote = await this.quotesRepository.findOne({ user: user });
+            const formattedDate = format(new Date(Date.now()), 'dd-MM-yyyy HH:mm:ss');
+            quote.message = updateQuoteDto.message;
+            quote.updated_at = formattedDate;
+            return this.quotesRepository.save(quote);
+        } catch (err) {
+            console.log(err.message);
+            throw new BadRequestException(`Cannot update a quote with user id: ${updateQuoteDto.user.id}`);
+        } finally {
+            this.logger.log(`Updating a quote with user id: ${updateQuoteDto.user.id}`);
+        }
     }
 
     async upVote(id: number): Promise<Quote> {
-        const user = await this.usersRepository.findOne({ id: id });
-        const quote = await this.quotesRepository.findOne({ user: user });
-        //const user = await this.usersRepository.findOne({ id: id });
-        //quote.votes = [...quote.votes, user]
-        return this.quotesRepository.save(quote);
+        try {
+            const user = await this.usersRepository.findOne({ id: id });
+            const quote = await this.quotesRepository.findOne({ user: user });
+            return this.quotesRepository.save(quote);
+        } catch (err) {
+            console.log(err.message);
+            throw new NotFoundException(`Error while upvoting.`);
+        } finally {
+            this.logger.log(`Upvoting a quote.`)
+        }
     }
 
     async downVote(id: number): Promise<Quote> {
-        const user = await this.usersRepository.findOne({ id: id });
-        const quote = await this.quotesRepository.findOne({ user: user });
-        //quote.votes--;
-        return this.quotesRepository.save(quote);
+        try {
+            const user = await this.usersRepository.findOne({ id: id });
+            const quote = await this.quotesRepository.findOne({ user: user });
+            return this.quotesRepository.save(quote);
+        } catch (err) {
+            console.log(err.message);
+            throw new NotFoundException(`Error while downvoting.`);
+        } finally {
+            this.logger.log(`Downvoting a quote.`)
+        }
     }
 
     async getUserQuote(id: number): Promise<Quote> {
-        const user = await this.usersRepository.findOne({ id: id });
-        const quote = await this.quotesRepository.findOne({ user: user }, { relations: ['user', 'votes'] });
-        if (quote) {
+        try {
+            const user = await this.usersRepository.findOne({ id: id });
+            const quote = await this.quotesRepository.findOne({ user: user }, { relations: ['user', 'votes'] });
             return quote;
-        } else {
+        } catch (err) {
+            console.log(err.message);
             throw new NotFoundException(`Quote with user_id: ${id} does not exists.`);
+        } finally {
+            this.logger.log(`Getting an authenticated user quote.`)
         }
     }
 
     async deleteQuote(id: number): Promise<Quote> {
-        this.logger.log(`Deleteing a quote with id: ${id}`);
-        const quote = await this.findById(id);
-
-        return this.quotesRepository.remove(quote);
+        try {
+            const quote = await this.findById(id);
+            return this.quotesRepository.remove(quote);
+        } catch (err) {
+            console.log(err.message)
+            throw new BadRequestException(`Cannot delete a quote with id: ${id}`);
+        } finally {
+            this.logger.log(`Deleteing a quote with id: ${id}`);
+        }
     }
 }

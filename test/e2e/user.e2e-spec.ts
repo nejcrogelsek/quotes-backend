@@ -1,13 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { forwardRef, INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { UsersModule } from '../../src/modules/users/users.module';
-import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from '../../src/entities/user.entity';
 import { UserData } from '../../src/interfaces/user.interface';
 import { AuthReturnData } from '../../src/interfaces/auth.interface';
 import { CreateUserDto } from '../../src/modules/users/dto/create-user.dto';
 import { Quote } from '../../src/entities/quote.entity';
+import { QuotesModule } from '../../src/modules/quotes/quotes.module';
+import { AuthModule } from '../../src/modules/auth/auth.module';
 
 describe('UserController (e2e)', () => {
     let app: INestApplication;
@@ -40,11 +42,13 @@ describe('UserController (e2e)', () => {
 
     const mockQuotesRepository = {}
 
+    // Make auth repository
+    const mockAuthRepository = {}
+
     beforeEach(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
             imports: [
-                UsersModule,
-
+                UsersModule
             ],
             providers: [
                 {
@@ -82,4 +86,39 @@ describe('UserController (e2e)', () => {
             });
     });
 
+    it('/users (GET)', () => {
+        return request(app.getHttpServer())
+            .get('/users')
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .expect(mockUsers);
+    });
+
+    it('/users/create (POST)', () => {
+        const dto: CreateUserDto = {
+            profile_image: 'undefined',
+            email: 'mockUser@gmail.com',
+            first_name: 'Mock',
+            last_name: 'User',
+            password: 'Mock123!',
+            confirm_password: 'Mock123!'
+        };
+        return request(app.getHttpServer())
+            .post('/users/create')
+            .send(dto)
+            .expect('Content-Type', /json/)
+            .expect(201)
+            .then(res => {
+                expect(res.body).toEqual({
+                    user: {
+                        id: expect.any(Number),
+                        email: 'mockUser@gmail.com',
+                        first_name: 'Mock',
+                        last_name: 'User',
+                        profile_image: 'undefined'
+                    },
+                    access_token: expect.any(String)
+                })
+            });
+    });
 });

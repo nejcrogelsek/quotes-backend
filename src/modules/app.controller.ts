@@ -1,9 +1,14 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, InternalServerErrorException } from '@nestjs/common';
 
 @Controller()
 export class AppController {
   @Get()
   getHello(): string {
-    return 'This is NestJS API for project Quotastic.'
+    try {
+      return 'This is NestJS API for project Quotastic.'
+    } catch (err) {
+      console.log(err.message)
+      throw new InternalServerErrorException()
+    }
   }
 }
