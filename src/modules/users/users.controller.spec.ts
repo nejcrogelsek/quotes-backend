@@ -10,7 +10,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
-describe('UsersController', () => {
+describe('UsersController (e2e)', () => {
   let app: INestApplication;
   let jwt: string;
   let initialUserId: number;
