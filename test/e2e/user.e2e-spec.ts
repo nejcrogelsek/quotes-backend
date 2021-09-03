@@ -1,124 +1,159 @@
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { forwardRef, INestApplication, ValidationPipe } from '@nestjs/common';
+import { hashSync } from 'bcrypt';
 import * as request from 'supertest';
+import { getConnection, getRepository } from 'typeorm';
 import { UsersModule } from '../../src/modules/users/users.module';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from '../../src/entities/user.entity';
-import { UserData } from '../../src/interfaces/user.interface';
-import { AuthReturnData } from '../../src/interfaces/auth.interface';
+import { AppModule } from '../../src/modules/app.module';
 import { CreateUserDto } from '../../src/modules/users/dto/create-user.dto';
-import { Quote } from '../../src/entities/quote.entity';
-import { QuotesModule } from '../../src/modules/quotes/quotes.module';
-import { AuthModule } from '../../src/modules/auth/auth.module';
+import { LoginUserDto } from '../../src/modules/users/dto/login-user.dto';
+import { UpdateUserDto } from '../../src/modules/users/dto/update-user.dto';
 
-describe('UserController (e2e)', () => {
-    let app: INestApplication;
+describe('UsersController', () => {
+  let app: INestApplication;
+  let jwt: string;
+  let initialUserId: number;
 
-    const mockUsers: UserData[] = [{
-        id: 1,
-        email: 'mock@gmail.com',
-        first_name: 'Mock',
-        last_name: 'Mocked',
-        profile_image: 'undefined'
-    }]
+  beforeAll(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule, UsersModule],
+    }).compile();
 
-    const mockUsersRepository = {
-        find: jest.fn().mockResolvedValue(mockUsers),
-        createUser: jest.fn().mockImplementation((dto: CreateUserDto): AuthReturnData => {
-            const { email, first_name, last_name, profile_image } = dto;
-            return {
-                user: {
-                    id: expect.any(Number),
-                    email: email,
-                    first_name: first_name,
-                    last_name: last_name,
-                    profile_image: profile_image
-                },
-                access_token: expect.any(String)
-            }
-        }),
-        save: jest.fn().mockImplementation(user => Promise.resolve({ id: expect.any(Number), ...user }))
-    };
+    app = moduleFixture.createNestApplication();
+    // Validation Pipe
+    app.useGlobalPipes(new ValidationPipe());
+    await app.init();
 
-    const mockQuotesRepository = {}
-
-    // Make auth repository
-    const mockAuthRepository = {}
-
-    beforeEach(async () => {
-        const moduleFixture: TestingModule = await Test.createTestingModule({
-            imports: [
-                UsersModule
-            ],
-            providers: [
-                {
-                    provide: getRepositoryToken(User),
-                    useValue: mockUsersRepository
-                },
-                {
-                    provide: getRepositoryToken(Quote),
-                    useValue: mockQuotesRepository
-                }
-            ],
-        }).compile();
-
-        app = moduleFixture.createNestApplication();
-        // Validation Pipe
-        app.useGlobalPipes(new ValidationPipe());
-        await app.init();
+    const usersRepo = await getRepository(User);
+    const initialUser = await usersRepo.save({
+      profile_image: 'undefined',
+      email: 'test@gmail.com',
+      first_name: 'Test',
+      last_name: 'User',
+      password: 'Test123!',
+      confirm_password: 'Test123!'
     });
+    initialUserId = initialUser.id;
+  });
 
-    it('/users/test (GET)', async () => {
-        return request(app.getHttpServer())
-            .get('/users/test')
-            .expect(200)
-            .expect('This is test');
-    });
+  afterAll(async () => {
+    try {
+      const entities = [];
+      await (await getConnection()).entityMetadatas.forEach(x =>
+        entities.push({ name: x.name, tableName: x.tableName }),
+      );
 
-    it('/users/test (GET) --> 400 on validation error', async () => {
-        return request(app.getHttpServer())
-            .post('/users/create')
-            .expect('Content-Type', /json/)
-            .expect(400, {
-                statusCode: 400,
-                message: 'Error testing',
-                error: 'Bad Request'
-            });
-    });
+      for (const entity of entities) {
+        const repository = await getRepository(entity.name);
+        await repository.query(`TRUNCATE TABLE "${entity.tableName}" cascade;`);
+      }
+    } catch (error) {
+      throw new Error(`ERROR: Cleaning test db: ${error}`);
+    }
 
-    it('/users (GET)', () => {
-        return request(app.getHttpServer())
-            .get('/users')
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .expect(mockUsers);
-    });
+    const conn = getConnection();
+    return conn.close();
+  });
 
-    it('/users/create (POST)', () => {
-        const dto: CreateUserDto = {
-            profile_image: 'undefined',
-            email: 'mockUser@gmail.com',
+  it('/users (GET)', async () => {
+    await request(app.getHttpServer())
+      .get('/users')
+      .expect('Content-Type', /json/)
+      .expect(200);
+  });
+
+  it('/users/signup (POST) --> 400 on validation error', async () => {
+    await request(app.getHttpServer())
+      .post('/users/signup')
+      .expect('Content-Type', /json/)
+      .expect(400);
+  });
+
+  it('/users/signup (POST)', async () => {
+    const dto: CreateUserDto = {
+      profile_image: 'undefined',
+      email: 'mockuser@gmail.com',
+      first_name: 'Mock',
+      last_name: 'User',
+      password: 'Mock123!',
+      confirm_password: 'Mock123!'
+    }
+    await request(app.getHttpServer())
+      .post('/users/signup')
+      .send(dto)
+      .expect('Content-Type', /json/)
+      .expect(201)
+      .then(res => {
+        expect(res.body).toEqual({
+          user: {
+            id: expect.any(Number),
+            email: 'mockuser@gmail.com',
             first_name: 'Mock',
             last_name: 'User',
-            password: 'Mock123!',
-            confirm_password: 'Mock123!'
-        };
-        return request(app.getHttpServer())
-            .post('/users/create')
-            .send(dto)
-            .expect('Content-Type', /json/)
-            .expect(201)
-            .then(res => {
-                expect(res.body).toEqual({
-                    user: {
-                        id: expect.any(Number),
-                        email: 'mockUser@gmail.com',
-                        first_name: 'Mock',
-                        last_name: 'User',
-                        profile_image: 'undefined'
-                    },
-                    access_token: expect.any(String)
-                })
-            });
-    });
-});
+            profile_image: 'undefined'
+          },
+          access_token: expect.any(String)
+        })
+      });
+  });
+
+  it('/users/login (POST)', async () => {
+    const dto: LoginUserDto = {
+      username: 'mockuser@gmail.com',
+      password: 'Mock123!',
+    };
+    await request(app.getHttpServer())
+      .post('/users/login')
+      .send(dto)
+      .expect(201)
+      .then(res => {
+        jwt = res.body.access_token
+        expect(res.body).toEqual({
+          user: {
+            id: expect.any(Number),
+            email: 'mockuser@gmail.com',
+            first_name: 'Mock',
+            last_name: 'User',
+            profile_image: 'undefined'
+          },
+          access_token: expect.any(String)
+        })
+      })
+  });
+
+  it('users/me/update-password (PATCH)', async () => {
+    const dto: UpdateUserDto = {
+      id: initialUserId,
+      email: 'neki@gmail.com',
+      first_name: 'Neki',
+      last_name: 'Uporabnik',
+      password: 'Neki123!',
+      confirm_password: 'Neki123!'
+    };
+    await request(app.getHttpServer())
+      .patch('/users/me/update-password')
+      .send(dto)
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .then(res => {
+        expect(res.body).toEqual({
+          id: initialUserId,
+          email: 'neki@gmail.com',
+          first_name: 'Neki',
+          last_name: 'Uporabnik',
+          profile_image: expect.any(String),
+          password: expect.any(String),
+          created_at: expect.any(String),
+          updated_at: expect.any(String)
+        })
+      })
+  })
+
+  /*it('users/protected (GET)', async () => {
+    await request(app.getHttpServer())
+      .get('users/protected')
+      .set('Authorization', `Bearer ${jwt}`)
+      .expect(200)
+  })*/
+})

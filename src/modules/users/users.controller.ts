@@ -15,11 +15,6 @@ export class UsersController {
     constructor(private usersService: UsersService,
         @Inject(forwardRef(() => AuthService)) private readonly authService: AuthService) { }
 
-    @Get('/test')
-    test(): string {
-        return 'This is test';
-    }
-
     @Get()
     getUsers(): Promise<User[]> {
         return this.usersService.findAll();
