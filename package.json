@@ -25,6 +25,7 @@
     "migration:run": "yarn run build && yarn run typeorm migration:run"
   },
   "dependencies": {
+    "@hapi/joi": "^17.1.1",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^1.0.1",
     "@nestjs/core": "^8.0.0",
@@ -53,6 +54,7 @@
     "@nestjs/testing": "^8.0.0",
     "@types/bcrypt": "^5.0.0",
     "@types/express": "^4.17.13",
+    "@types/hapi__joi": "^17.1.7",
     "@types/jest": "^26.0.24",
     "@types/multer": "^1.4.7",
     "@types/node": "^16.0.0",
