@@ -25,7 +25,7 @@ export class QuotesService {
         }
     }
 
-    findRecent(): Promise<Quote[]> {
+    async findRecent(): Promise<Quote[]> {
         try {
             return this.quotesRepository.find({ relations: ['user', 'votes'], order: { 'updated_at': 'ASC' } });
         } catch (err) {
@@ -51,7 +51,7 @@ export class QuotesService {
     }
 
     async findById(id: number): Promise<Quote> {
-        const found = await this.quotesRepository.findOne(id);
+        const found = await this.quotesRepository.findOne(id, { relations: ['user', 'votes'] });
         if (!found) {
             throw new NotFoundException(`Quote with id: ${id} does not exist.`)
         }
@@ -71,32 +71,6 @@ export class QuotesService {
             throw new BadRequestException(`Cannot update a quote with user id: ${updateQuoteDto.user.id}`);
         } finally {
             this.logger.log(`Updating a quote with user id: ${updateQuoteDto.user.id}`);
-        }
-    }
-
-    async upVote(id: number): Promise<Quote> {
-        try {
-            const user = await this.usersRepository.findOne({ id: id });
-            const quote = await this.quotesRepository.findOne({ user: user });
-            return this.quotesRepository.save(quote);
-        } catch (err) {
-            console.log(err.message);
-            throw new NotFoundException(`Error while upvoting.`);
-        } finally {
-            this.logger.log(`Upvoting a quote.`)
-        }
-    }
-
-    async downVote(id: number): Promise<Quote> {
-        try {
-            const user = await this.usersRepository.findOne({ id: id });
-            const quote = await this.quotesRepository.findOne({ user: user });
-            return this.quotesRepository.save(quote);
-        } catch (err) {
-            console.log(err.message);
-            throw new NotFoundException(`Error while downvoting.`);
-        } finally {
-            this.logger.log(`Downvoting a quote.`)
         }
     }
 

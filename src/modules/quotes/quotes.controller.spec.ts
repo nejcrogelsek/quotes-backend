@@ -9,10 +9,11 @@ import { UpdateQuoteDto } from './dto/update-quote.dto';
 import { Quote } from '../../entities/quote.entity';
 import { User } from '../../entities/user.entity';
 import { UserData } from '../../interfaces/user.interface';
+import { QuoteData } from '../../interfaces/quote.interface';
 
 describe('QuotesController (e2e)', () => {
   let app: INestApplication;
-  let initialQuoteId: number;
+  let quote: QuoteData;
   let user: UserData;
 
   beforeAll(async () => {
@@ -46,7 +47,7 @@ describe('QuotesController (e2e)', () => {
     }
     const quotesRepo = getRepository(Quote);
     const initialQuote = await quotesRepo.save({ message: 'this is test', votes: [], user: initialUser });
-    initialQuoteId = initialQuote.id;
+    quote = initialQuote;
   });
 
   afterAll(async () => {
@@ -87,5 +88,56 @@ describe('QuotesController (e2e)', () => {
       .get('/quotes/liked')
       .expect('Content-Type', /json/)
       .expect(200)
+  })
+
+  it('/quotes/myquote', async () => {
+    const dto: UpdateQuoteDto = {
+      message: 'This quote is updated',
+      user: user
+    }
+    await request(app.getHttpServer())
+      .patch('/myquote')
+      .send(dto)
+      .expect(201)
+      .then(res => {
+        expect(res.body).toEqual({
+          id: quote.id,
+          message: 'This quote is updated',
+          reated_at: quote.created_at,
+          updated_at: expect.any(String),
+          user: user
+        })
+      })
+  })
+
+  it('/quotes/:id (GET)', async () => {
+    await request(app.getHttpServer())
+      .get(`/quotes/${user.id}`)
+      .expect(200)
+      .then(res => {
+        expect(res.body).toEqual({
+          id: quote.id,
+          message: quote.message,
+          votes: quote.votes,
+          user: quote.user,
+          created_at: quote.created_at,
+          updated_at: expect.any(String)
+        })
+      })
+  })
+
+  it('/quotes/:id (DELETE)', async () => {
+    await request(app.getHttpServer())
+      .delete(`/quotes/${quote.id}`)
+      .expect(200)
+      .then(res => {
+        expect(res.body).toEqual({
+          message: quote.message,
+          votes: quote.votes,
+          user: quote.user,
+          created_at: quote.created_at,
+          updated_at: expect.any(String)
+        })
+      })
   })
 })
