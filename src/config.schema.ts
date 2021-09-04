@@ -2,6 +2,7 @@ import * as Joi from '@hapi/joi';
 
 export const configValidationSchema = Joi.object({
     STAGE: Joi.string().required(),
+    PORT: Joi.number().default(3000),
     POSTGRES_HOST: Joi.string().required(),
     POSTGRES_PORT: Joi.number().default(5432).required(),
     POSTGRES_USER: Joi.string().required(),
@@ -11,4 +12,5 @@ export const configValidationSchema = Joi.object({
     AWS_BUCKET_REGION: Joi.string().required(),
     AWS_ACCESS_KEY_ID: Joi.string().required(),
     AWS_SECRET_ACCESS_KEY: Joi.string().required(),
+    JWT_SECRET: Joi.string().required()
 })
