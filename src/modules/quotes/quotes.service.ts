@@ -74,6 +74,34 @@ export class QuotesService {
         }
     }
 
+    async upVote(id: number): Promise<Quote> {
+        try {
+            const user = await this.usersRepository.findOne({ id: id });
+            const quote = await this.quotesRepository.findOne({ user: user }, { relations: ['user', 'votes'] });
+            quote.updated_at = format(new Date(Date.now()), 'dd-MM-yyyy HH:mm:ss');
+            return this.quotesRepository.save(quote);
+        } catch (err) {
+            console.log(err.message);
+            throw new NotFoundException(`Error while upvoting.`);
+        } finally {
+            this.logger.log(`Upvoting a quote.`)
+        }
+    }
+
+    async downVote(id: number): Promise<Quote> {
+        try {
+            const user = await this.usersRepository.findOne({ id: id });
+            const quote = await this.quotesRepository.findOne({ user: user }, { relations: ['user', 'votes'] });
+            quote.updated_at = format(new Date(Date.now()), 'dd-MM-yyyy HH:mm:ss');
+            return this.quotesRepository.save(quote);
+        } catch (err) {
+            console.log(err.message);
+            throw new NotFoundException(`Error while downvoting.`);
+        } finally {
+            this.logger.log(`Downvoting a quote.`)
+        }
+    }
+
     async getUserQuote(id: number): Promise<Quote> {
         try {
             const user = await this.usersRepository.findOne({ id: id });

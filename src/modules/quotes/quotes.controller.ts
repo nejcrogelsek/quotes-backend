@@ -24,9 +24,19 @@ export class QuotesController {
         return this.quotesService.findLiked();
     }
 
-    @Patch('/myquote')
-    updateQuote(@Body() body: UpdateQuoteDto): Promise<Quote> {
-        return this.quotesService.updateQuote(body);
+    // @Patch('/myquote')
+    // updateQuote(@Body() body: UpdateQuoteDto): Promise<Quote> {
+    //     return this.quotesService.updateQuote(body);
+    // }
+
+    @Post('/user/:id/upvote')
+    upVote(@Param('id', ParseIntPipe) id: number): Promise<Quote> {
+        return this.quotesService.upVote(id);
+    }
+
+    @Post('/user/:id/downvote')
+    downVote(@Param('id', ParseIntPipe) id: number): Promise<Quote> {
+        return this.quotesService.downVote(id);
     }
 
     @Get('/:id')

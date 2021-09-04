@@ -90,7 +90,39 @@ describe('QuotesController (e2e)', () => {
       .expect(200)
   })
 
-  it('/quotes/myquote', async () => {
+  it('/quotes/user/:id/upvote (POST)', async () => {
+    await request(app.getHttpServer())
+      .post(`/quotes/user/${user.id}/upvote`)
+      .expect(201)
+      .then(res => {
+        expect(res.body).toEqual({
+          id: quote.id,
+          message: quote.message,
+          votes: quote.votes,
+          user: quote.user,
+          created_at: quote.created_at,
+          updated_at: expect.any(String)
+        })
+      })
+  })
+
+  it('/quotes/user/:id/downvote (POST)', async () => {
+    await request(app.getHttpServer())
+      .post(`/quotes/user/${user.id}/downvote`)
+      .expect(201)
+      .then(res => {
+        expect(res.body).toEqual({
+          id: quote.id,
+          message: quote.message,
+          votes: quote.votes,
+          user: quote.user,
+          created_at: quote.created_at,
+          updated_at: expect.any(String)
+        })
+      })
+  })
+
+  /*it('/quotes/myquote', async () => {
     const dto: UpdateQuoteDto = {
       message: 'This quote is updated',
       user: user
@@ -108,7 +140,7 @@ describe('QuotesController (e2e)', () => {
           user: user
         })
       })
-  })
+  })*/
 
   it('/quotes/:id (GET)', async () => {
     await request(app.getHttpServer())

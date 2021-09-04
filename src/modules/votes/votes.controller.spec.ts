@@ -10,10 +10,10 @@ import { AppModule } from '../app.module';
 import { VotesModule } from './votes.module';
 import { QuoteData } from '../../interfaces/quote.interface';
 import { Quote } from '../../entities/quote.entity';
+import { CreateRemoveVoteDto } from './dto/create-remove-vote.dto';
 
 describe('VotesController (e2e)', () => {
   let app: INestApplication;
-  let vote: { quote_id: number; user_id: number; };
   let user: UserData;
   let quote: QuoteData;
 
@@ -46,13 +46,12 @@ describe('VotesController (e2e)', () => {
     }
     const quotesRepo = getRepository(Quote);
     const initialQuote = await quotesRepo.save({ message: 'this is test', votes: [], user: initialUser });
-    const votesRepo = await getRepository(Vote);
-    const initialVote = await votesRepo.save({
+    const votesRepo = getRepository(Vote);
+    await votesRepo.save({
       quote_id: initialQuote.id,
       user_id: initialUser.id,
     });
     quote = initialQuote;
-    vote = initialVote;
   });
 
   afterAll(async () => {
@@ -81,32 +80,35 @@ describe('VotesController (e2e)', () => {
   });
 
   it('/votes/user/:id/upvote (POST)', async () => {
+    const dto: CreateRemoveVoteDto = {
+      quote_id: quote.id,
+      user_id: user.id
+    }
     await request(app.getHttpServer())
-      .post(`/quotes/user/${user.id}/upvote`)
+      .post(`/votes/user/${user.id}/upvote`)
       .expect(201)
+      .send(dto)
       .then(res => {
         expect(res.body).toEqual({
-          id: quote.id,
-          message: quote.message,
-          votes: quote.votes,
-          user: quote.user,
-          created_at: quote.created_at,
-          updated_at: expect.any(String)
+          id: expect.any(Number),
+          quote_id: quote.id,
+          user_id: user.id,
         })
       })
   })
-  it('/quotes/user/:id/downvote (POST)', async () => {
+  it('/votes/user/:id/downvote (POST)', async () => {
+    const dto: CreateRemoveVoteDto = {
+      quote_id: quote.id,
+      user_id: user.id
+    }
     await request(app.getHttpServer())
-      .post(`/quotes/user/${user.id}/downvote`)
-      .expect(201)
+      .delete(`/votes/user/${user.id}/downvote`)
+      .expect(200)
+      .send(dto)
       .then(res => {
         expect(res.body).toEqual({
-          id: quote.id,
-          message: quote.message,
-          votes: quote.votes,
-          user: quote.user,
-          created_at: quote.created_at,
-          updated_at: expect.any(String)
+          quote_id: quote.id,
+          user_id: user.id,
         })
       })
   })

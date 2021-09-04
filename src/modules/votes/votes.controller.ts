@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, ParseIntPipe, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { Quote } from '../../entities/quote.entity';
 import { Vote } from '../../entities/vote.entity';
 import { CreateRemoveVoteDto } from './dto/create-remove-vote.dto';
@@ -11,16 +11,6 @@ export class VotesController {
     @Get()
     getVotes(): Promise<Vote[]> {
         return this.votesService.findAll();
-    }
-
-    @Post('/user/:id/upvote')
-    upVote(@Param('id', ParseIntPipe) id: number): Promise<Quote> {
-        return this.votesService.createVote(id);
-    }
-
-    @Post('/user/:id/downvote')
-    downVote(@Param('id', ParseIntPipe) id: number): Promise<Quote> {
-        return this.quotesService.downVote(id);
     }
 
     @Post('/user/:id/upvote')
