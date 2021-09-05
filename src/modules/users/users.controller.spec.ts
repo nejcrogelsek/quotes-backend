@@ -9,11 +9,12 @@ import { AppModule } from '../app.module';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { IUser } from '../../interfaces/user.interface';
 
 describe('UsersController (e2e)', () => {
   let app: INestApplication;
   let jwt: string;
-  let initialUserId: number;
+  let initialUserData: IUser;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -27,15 +28,18 @@ describe('UsersController (e2e)', () => {
 
     // DB interaction
     const usersRepo = await getRepository(User);
-    const initialUser = await usersRepo.save({
+    let initialUser = usersRepo.create({
       profile_image: 'undefined',
       email: 'test@gmail.com',
       first_name: 'Test',
       last_name: 'User',
       password: 'Test123!',
-      confirm_password: 'Test123!'
+      created_at: Date.now().toLocaleString(),
+      updated_at: Date.now().toLocaleString(),
     });
-    initialUserId = initialUser.id;
+    initialUser = await usersRepo.save(initialUser);
+    initialUserData = initialUser;
+    console.log(initialUserData);
   });
 
   afterAll(async () => {
@@ -60,7 +64,6 @@ describe('UsersController (e2e)', () => {
   it('/users (GET)', async () => {
     await request(app.getHttpServer())
       .get('/users')
-      .expect('Content-Type', /json/)
       .expect(200);
   });
 
@@ -82,8 +85,8 @@ describe('UsersController (e2e)', () => {
     }
     await request(app.getHttpServer())
       .post('/users/signup')
-      .send(dto)
       .expect('Content-Type', /json/)
+      .send(dto)
       .expect(201)
       .then(res => {
         expect(res.body).toEqual({
@@ -106,6 +109,7 @@ describe('UsersController (e2e)', () => {
     };
     await request(app.getHttpServer())
       .post('/users/login')
+      .expect('Content-Type', /json/)
       .send(dto)
       .expect(201)
       .then(res => {
@@ -120,12 +124,13 @@ describe('UsersController (e2e)', () => {
           },
           access_token: expect.any(String)
         })
+        jwt = res.body.access_token;
       })
   });
 
-  it('users/me/update-password (PATCH)', async () => {
+  it('/users/me/update-password (PATCH)', async () => {
     const dto: UpdateUserDto = {
-      id: initialUserId,
+      id: initialUserData.id,
       email: 'neki@gmail.com',
       first_name: 'Neki',
       last_name: 'Uporabnik',
@@ -134,12 +139,12 @@ describe('UsersController (e2e)', () => {
     };
     await request(app.getHttpServer())
       .patch('/users/me/update-password')
-      .send(dto)
       .expect('Content-Type', /json/)
+      .send(dto)
       .expect(200)
       .then(res => {
         expect(res.body).toEqual({
-          id: initialUserId,
+          id: initialUserData.id,
           email: 'neki@gmail.com',
           first_name: 'Neki',
           last_name: 'Uporabnik',
@@ -151,10 +156,28 @@ describe('UsersController (e2e)', () => {
       })
   })
 
-  /*it('users/protected (GET)', async () => {
+  it('/users/:id (DELETE)', async () => {
+    await request(app.getHttpServer())
+      .delete(`/users/${initialUserData.id}`)
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .then(res => {
+        expect(res.body).toEqual({
+          email: 'neki@gmail.com',
+          first_name: 'Neki',
+          last_name: 'Uporabnik',
+          profile_image: expect.any(String),
+          password: expect.any(String),
+          created_at: initialUserData.created_at,
+          updated_at: expect.any(String),
+        })
+      })
+  })
+
+  it('users/protected (GET) --> 400 error', async () => {
     await request(app.getHttpServer())
       .get('users/protected')
       .set('Authorization', `Bearer ${jwt}`)
       .expect(200)
-  })*/
+  })
 })

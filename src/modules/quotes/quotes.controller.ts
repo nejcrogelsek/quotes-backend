@@ -11,14 +11,17 @@ export class QuotesController {
     getQuotes(): Promise<Quote[]> {
         return this.quotesService.findAll();
     }
+
     @Get('/test')
     test(): Promise<any> {
         return this.quotesService.findLiked();
     }
+
     @Get('/recent')
     getRecentQuotes(): Promise<Quote[]> {
         return this.quotesService.findRecent();
     }
+
     @Get('/liked')
     getLikedQuotes(): Promise<Quote[]> {
         return this.quotesService.findLiked();

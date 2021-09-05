@@ -38,13 +38,7 @@ describe('QuotesController (e2e)', () => {
       updated_at: Date.now().toLocaleString(),
     });
     initialUser = await usersRepo.save(initialUser);
-    user = {
-      id: initialUser.id,
-      email: initialUser.email,
-      first_name: initialUser.first_name,
-      last_name: initialUser.last_name,
-      profile_image: initialUser.profile_image,
-    }
+    user = initialUser;
     const quotesRepo = getRepository(Quote);
     const initialQuote = await quotesRepo.save({ message: 'this is test', votes: [], user: initialUser });
     quote = initialQuote;
@@ -90,58 +84,6 @@ describe('QuotesController (e2e)', () => {
       .expect(200)
   })
 
-  it('/quotes/user/:id/upvote (POST)', async () => {
-    await request(app.getHttpServer())
-      .post(`/quotes/user/${user.id}/upvote`)
-      .expect(201)
-      .then(res => {
-        expect(res.body).toEqual({
-          id: quote.id,
-          message: quote.message,
-          votes: quote.votes,
-          user: quote.user,
-          created_at: quote.created_at,
-          updated_at: expect.any(String)
-        })
-      })
-  })
-
-  it('/quotes/user/:id/downvote (POST)', async () => {
-    await request(app.getHttpServer())
-      .post(`/quotes/user/${user.id}/downvote`)
-      .expect(201)
-      .then(res => {
-        expect(res.body).toEqual({
-          id: quote.id,
-          message: quote.message,
-          votes: quote.votes,
-          user: quote.user,
-          created_at: quote.created_at,
-          updated_at: expect.any(String)
-        })
-      })
-  })
-
-  /*it('/quotes/myquote', async () => {
-    const dto: UpdateQuoteDto = {
-      message: 'This quote is updated',
-      user: user
-    }
-    await request(app.getHttpServer())
-      .patch('/myquote')
-      .send(dto)
-      .expect(201)
-      .then(res => {
-        expect(res.body).toEqual({
-          id: quote.id,
-          message: 'This quote is updated',
-          reated_at: quote.created_at,
-          updated_at: expect.any(String),
-          user: user
-        })
-      })
-  })*/
-
   it('/quotes/:id (GET)', async () => {
     await request(app.getHttpServer())
       .get(`/quotes/${user.id}`)
@@ -158,9 +100,65 @@ describe('QuotesController (e2e)', () => {
       })
   })
 
+  it('/quotes/user/:id/upvote (POST)', async () => {
+    await request(app.getHttpServer())
+      .post(`/quotes/user/${user.id}/upvote`)
+      .expect('Content-Type', /json/)
+      .expect(201)
+      .then(res => {
+        expect(res.body).toEqual({
+          id: quote.id,
+          message: quote.message,
+          votes: quote.votes,
+          user: quote.user,
+          created_at: quote.created_at,
+          updated_at: expect.any(String)
+        })
+      })
+  })
+
+  it('/quotes/user/:id/downvote (POST)', async () => {
+    await request(app.getHttpServer())
+      .post(`/quotes/user/${user.id}/downvote`)
+      .expect('Content-Type', /json/)
+      .expect(201)
+      .then(res => {
+        expect(res.body).toEqual({
+          id: quote.id,
+          message: quote.message,
+          votes: quote.votes,
+          user: quote.user,
+          created_at: quote.created_at,
+          updated_at: expect.any(String)
+        })
+      })
+  })
+
+  /*it('/quotes/myquote (PATCH)', async () => {
+    const dto: UpdateQuoteDto = {
+      message: 'This quote is updated',
+      user: user
+    }
+    await request(app.getHttpServer())
+      .patch('/quotes/myquote')
+      .expect('Content-Type', /json/)
+      .send(dto)
+      .expect(201)
+      .then(res => {
+        expect(res.body).toEqual({
+          id: quote.id,
+          message: 'This quote is updated',
+          created_at: quote.created_at,
+          updated_at: expect.any(String),
+          user: user
+        })
+      })
+  })*/
+
   it('/quotes/:id (DELETE)', async () => {
     await request(app.getHttpServer())
       .delete(`/quotes/${quote.id}`)
+      .expect('Content-Type', /json/)
       .expect(200)
       .then(res => {
         expect(res.body).toEqual({

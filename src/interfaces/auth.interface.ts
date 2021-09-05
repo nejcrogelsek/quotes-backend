@@ -16,3 +16,4 @@ export interface UserDataFromToken {
     last_name: string;
     profile_image: string;
 }
+export interface RefreshTokenData { name: string, sub: number }

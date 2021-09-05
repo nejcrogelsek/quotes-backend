@@ -96,6 +96,7 @@ describe('VotesController (e2e)', () => {
         })
       })
   })
+
   it('/votes/user/:id/downvote (POST)', async () => {
     const dto: CreateRemoveVoteDto = {
       quote_id: quote.id,
