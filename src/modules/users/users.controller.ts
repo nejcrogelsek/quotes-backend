@@ -80,7 +80,6 @@ export class UsersController {
     @Get('protected')
     async me(@Request() req): Promise<UserDataFromToken> {
         try {
-            console.log(req.user);
             const user = await this.usersService.findById(req.user.id);
             return {
                 id: user.id,

@@ -33,24 +33,23 @@ describe('UsersController (e2e)', () => {
       email: 'test@gmail.com',
       first_name: 'Test',
       last_name: 'User',
-      password: 'Test123!',
+      password: hashSync('Test123', 10),
       created_at: Date.now().toLocaleString(),
       updated_at: Date.now().toLocaleString(),
     });
     initialUser = await usersRepo.save(initialUser);
     initialUserData = initialUser;
-    console.log(initialUserData);
   });
 
   afterAll(async () => {
     try {
       const entities = [];
-      await (await getConnection()).entityMetadatas.forEach(x =>
+      (getConnection()).entityMetadatas.forEach(x =>
         entities.push({ name: x.name, tableName: x.tableName }),
       );
 
       for (const entity of entities) {
-        const repository = await getRepository(entity.name);
+        const repository = getRepository(entity.name);
         await repository.query(`TRUNCATE TABLE "${entity.tableName}" cascade;`);
       }
     } catch (error) {
@@ -174,9 +173,10 @@ describe('UsersController (e2e)', () => {
       })
   })
 
-  it('users/protected (GET) --> 400 error', async () => {
+  it('/users/protected (GET)', async () => {
     await request(app.getHttpServer())
-      .get('users/protected')
+      .get('/users/protected')
+      .set('Content-Type', 'application/json')
       .set('Authorization', `Bearer ${jwt}`)
       .expect(200)
   })
