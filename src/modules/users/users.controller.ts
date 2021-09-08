@@ -1,7 +1,6 @@
 import { Body, Controller, Delete, Get, Request, Param, ParseIntPipe, Patch, Post, Res, UseGuards, forwardRef, Inject, UnauthorizedException, BadRequestException, } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthReturnData, UserDataFromToken } from '../../interfaces/auth.interface';
-import { generateUploadUrl } from '../../../s3'
 import { User } from '../../entities/user.entity';
 import { JwtAuthGuard } from '../auth/auth-jwt.guard';
 import { AuthService } from '../auth/auth.service';
@@ -39,7 +38,7 @@ export class UsersController {
     @Get('upload')
     async uploadFile(@Res() res: Response) {
         try {
-            const url = await generateUploadUrl();
+            const url = await this.usersService.generateUploadUrl();
             res.send({ url });
         } catch (err) {
             console.log(err.message);
@@ -81,20 +80,18 @@ export class UsersController {
     @Get('protected')
     async me(@Request() req): Promise<UserDataFromToken> {
         try {
-            let userInfo: UserDataFromToken = { id: null, email: null, first_name: null, last_name: null, profile_image: null };
-            await this.usersService.findById(req.user.id).then((res) => {
-                userInfo = {
-                    id: res.id,
-                    email: res.email,
-                    first_name: res.first_name,
-                    last_name: res.last_name,
-                    profile_image: res.profile_image,
-                }
-            })
-            return userInfo;
+            console.log(req.user);
+            const user = await this.usersService.findById(req.user.id);
+            return {
+                id: user.id,
+                email: user.email,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                profile_image: user.profile_image,
+            };
         } catch (err) {
             console.log(err.message);
-            throw new UnauthorizedException()
+            throw new BadRequestException()
         }
     }
 }
