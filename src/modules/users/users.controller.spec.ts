@@ -33,7 +33,7 @@ describe('UsersController (e2e)', () => {
       email: 'test@gmail.com',
       first_name: 'Test',
       last_name: 'User',
-      password: hashSync('Test123', 10),
+      password: hashSync('Test123!', 10),
       created_at: Date.now().toLocaleString(),
       updated_at: Date.now().toLocaleString(),
     });

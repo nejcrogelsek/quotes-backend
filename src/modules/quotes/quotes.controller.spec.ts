@@ -30,10 +30,10 @@ describe('QuotesController (e2e)', () => {
     const usersRepo = getRepository(User);
     let initialUser = usersRepo.create({
       profile_image: 'undefined',
-      email: 'test@gmail.com',
-      first_name: 'Test',
-      last_name: 'User',
-      password: 'Test123!',
+      email: 'john@gmail.com',
+      first_name: 'John',
+      last_name: 'Doe',
+      password: 'John123!!',
       created_at: Date.now().toLocaleString(),
       updated_at: Date.now().toLocaleString(),
     });
@@ -134,7 +134,8 @@ describe('QuotesController (e2e)', () => {
       })
   })
 
-  /*it('/quotes/myquote (PATCH)', async () => {
+  /*
+  it('/quotes/myquote (PATCH)', async () => {
     const dto: UpdateQuoteDto = {
       message: 'This quote is updated',
       user: user
@@ -153,7 +154,8 @@ describe('QuotesController (e2e)', () => {
           user: user
         })
       })
-  })*/
+  })
+  */
 
   it('/quotes/:id (DELETE)', async () => {
     await request(app.getHttpServer())

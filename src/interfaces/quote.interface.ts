@@ -10,6 +10,13 @@ export interface QuoteData {
     updated_at: string;
 }
 
+export interface IMostLikedQuote {
+    id: number;
+    message: string;
+    user: UserData;
+    votes: number;
+}
+
 export interface IQuotes {
     quotes: QuoteData[];
 }

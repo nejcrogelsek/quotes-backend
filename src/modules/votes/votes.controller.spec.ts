@@ -29,10 +29,10 @@ describe('VotesController (e2e)', () => {
     const usersRepo = getRepository(User);
     let initialUser = usersRepo.create({
       profile_image: 'undefined',
-      email: 'test@gmail.com',
-      first_name: 'Test',
-      last_name: 'User',
-      password: 'Test123!',
+      email: 'spela@gmail.com',
+      first_name: 'Spela',
+      last_name: 'Spelca',
+      password: 'Spela123!',
       created_at: Date.now().toLocaleString(),
       updated_at: Date.now().toLocaleString(),
     });

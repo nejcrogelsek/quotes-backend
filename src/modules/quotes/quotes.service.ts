@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { UpdateQuoteDto } from './dto/update-quote.dto';
 import { User } from '../../entities/user.entity';
 import { format } from 'date-fns';
+import { IMostLikedQuote } from '../../interfaces/quote.interface';
 
 @Injectable()
 export class QuotesService {
@@ -36,18 +37,27 @@ export class QuotesService {
         }
     }
 
-    async findLiked(): Promise<Quote[]> {
+    async findLiked(): Promise<Object[]> {
         try {
-            return this.quotesRepository.find({ relations: ['user', 'votes'], order: { 'updated_at': 'DESC' } });
+            let result: IMostLikedQuote[] = [];
+            const mostLiked = await this.quotesRepository.find({ relations: ['user', 'votes'], order: { 'updated_at': 'DESC' } });
+            for (let i = 0; i < mostLiked.length; i++) {
+                result.push(
+                    {
+                        id: mostLiked[i].id,
+                        message: mostLiked[i].message,
+                        user: mostLiked[i].user,
+                        votes: mostLiked[i].votes.length,
+                    })
+            }
+            result.sort(({ votes: a }, { votes: b }) => b - a);
+            return result;
         } catch (err) {
             console.log(err.message);
             throw new BadRequestException('Error while searching for most liked quotes.');
         } finally {
             this.logger.log('Searching for most liked quotes.');
         }
-        //return this.quotesRepository.createQueryBuilder('quote')
-        //  .leftJoinAndSelect('quote.votes', 'vote')
-        //  .getMany()
     }
 
     async findById(id: number): Promise<Quote> {

@@ -23,7 +23,7 @@ export class QuotesController {
     }
 
     @Get('/liked')
-    getLikedQuotes(): Promise<Quote[]> {
+    getLikedQuotes(): Promise<Object[]> {
         return this.quotesService.findLiked();
     }
 
