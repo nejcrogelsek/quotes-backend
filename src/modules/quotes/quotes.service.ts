@@ -37,7 +37,7 @@ export class QuotesService {
         }
     }
 
-    async findLiked(): Promise<Object[]> {
+    async findLiked(): Promise<IMostLikedQuote[]> {
         try {
             let result: IMostLikedQuote[] = [];
             const mostLiked = await this.quotesRepository.find({ relations: ['user', 'votes'], order: { 'updated_at': 'DESC' } });

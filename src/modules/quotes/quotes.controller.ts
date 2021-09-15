@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
+import { IMostLikedQuote } from '../../interfaces/quote.interface';
 import { Quote } from '../../entities/quote.entity';
 import { UpdateQuoteDto } from './dto/update-quote.dto';
 import { QuotesService } from './quotes.service';
@@ -23,7 +24,7 @@ export class QuotesController {
     }
 
     @Get('/liked')
-    getLikedQuotes(): Promise<Object[]> {
+    getLikedQuotes(): Promise<IMostLikedQuote[]> {
         return this.quotesService.findLiked();
     }
 
