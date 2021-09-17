@@ -33,7 +33,7 @@ describe('QuotesController (e2e)', () => {
       email: 'john@gmail.com',
       first_name: 'John',
       last_name: 'Doe',
-      password: 'John123!!',
+      password: 'John123!',
       created_at: Date.now().toLocaleString(),
       updated_at: Date.now().toLocaleString(),
     });
@@ -94,7 +94,7 @@ describe('QuotesController (e2e)', () => {
           message: quote.message,
           votes: quote.votes,
           user: quote.user,
-          created_at: quote.created_at,
+          created_at: expect.any(String),
           updated_at: expect.any(String)
         })
       })
@@ -111,7 +111,7 @@ describe('QuotesController (e2e)', () => {
           message: quote.message,
           votes: quote.votes,
           user: quote.user,
-          created_at: quote.created_at,
+          created_at: expect.any(String),
           updated_at: expect.any(String)
         })
       })
@@ -128,13 +128,12 @@ describe('QuotesController (e2e)', () => {
           message: quote.message,
           votes: quote.votes,
           user: quote.user,
-          created_at: quote.created_at,
+          created_at: expect.any(String),
           updated_at: expect.any(String)
         })
       })
   })
 
-  /*
   it('/quotes/myquote (PATCH)', async () => {
     const dto: UpdateQuoteDto = {
       message: 'This quote is updated',
@@ -144,18 +143,18 @@ describe('QuotesController (e2e)', () => {
       .patch('/quotes/myquote')
       .expect('Content-Type', /json/)
       .send(dto)
-      .expect(201)
+      .expect(200)
       .then(res => {
         expect(res.body).toEqual({
           id: quote.id,
           message: 'This quote is updated',
-          created_at: quote.created_at,
+          created_at: expect.any(String),
           updated_at: expect.any(String),
           user: user
         })
+        quote.message = res.body.message;
       })
   })
-  */
 
   it('/quotes/:id (DELETE)', async () => {
     await request(app.getHttpServer())
@@ -167,7 +166,7 @@ describe('QuotesController (e2e)', () => {
           message: quote.message,
           votes: quote.votes,
           user: quote.user,
-          created_at: quote.created_at,
+          created_at: expect.any(String),
           updated_at: expect.any(String)
         })
       })
