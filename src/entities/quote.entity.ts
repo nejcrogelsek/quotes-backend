@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { User } from './user.entity';
 import { format } from 'date-fns';
 import { Vote } from './vote.entity';
@@ -20,9 +20,9 @@ export class Quote {
     @JoinColumn()
     user: User;
 
-    @Column({ default: format(new Date(Date.now()), 'dd-MM-yyyy HH:mm:ss') })
+    @CreateDateColumn()
     created_at: string;
 
-    @Column({ default: format(new Date(Date.now()), 'dd-MM-yyyy HH:mm:ss') })
+    @UpdateDateColumn()
     updated_at: string;
 }

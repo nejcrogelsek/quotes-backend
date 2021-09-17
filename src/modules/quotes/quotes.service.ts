@@ -28,7 +28,7 @@ export class QuotesService {
 
     async findRecent(): Promise<Quote[]> {
         try {
-            return this.quotesRepository.find({ relations: ['user', 'votes'], order: { 'updated_at': 'ASC' } });
+            return this.quotesRepository.find({ relations: ['user', 'votes'], order: { 'updated_at': 'DESC' } });
         } catch (err) {
             console.log(err.message);
             throw new BadRequestException('Error while searching for most recent quotes.');
@@ -72,9 +72,7 @@ export class QuotesService {
         try {
             const user = await this.usersRepository.findOne({ id: updateQuoteDto.user.id });
             const quote = await this.quotesRepository.findOne({ user: user }, { relations: ['user'] });
-            const formattedDate = format(new Date(Date.now()), 'dd-MM-yyyy HH:mm:ss');
             quote.message = updateQuoteDto.message;
-            quote.updated_at = formattedDate;
             return this.quotesRepository.save(quote);
         } catch (err) {
             console.log(err.message);
@@ -88,7 +86,6 @@ export class QuotesService {
         try {
             const user = await this.usersRepository.findOne({ id: id });
             const quote = await this.quotesRepository.findOne({ user: user }, { relations: ['user', 'votes'] });
-            quote.updated_at = format(new Date(Date.now()), 'dd-MM-yyyy HH:mm:ss');
             return this.quotesRepository.save(quote);
         } catch (err) {
             console.log(err.message);
@@ -102,7 +99,6 @@ export class QuotesService {
         try {
             const user = await this.usersRepository.findOne({ id: id });
             const quote = await this.quotesRepository.findOne({ user: user }, { relations: ['user', 'votes'] });
-            quote.updated_at = format(new Date(Date.now()), 'dd-MM-yyyy HH:mm:ss');
             return this.quotesRepository.save(quote);
         } catch (err) {
             console.log(err.message);

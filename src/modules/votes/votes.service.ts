@@ -30,7 +30,6 @@ export class VotesService {
             const newVote = this.votesRepository.create(createVoteDto);
             const savedVote = await this.votesRepository.save(newVote);
             quote.votes.push(savedVote);
-            quote.updated_at = format(new Date(Date.now()), 'dd-MM-yyyy HH:mm:ss');
             await this.quotesRepository.save(quote);
             return savedVote;
 
@@ -46,7 +45,6 @@ export class VotesService {
         try {
             const quote = await this.quotesRepository.findOne(removeVoteDto.quote_id);
             const vote = await this.votesRepository.findOne({ quote_id: removeVoteDto.quote_id, user_id: removeVoteDto.user_id });
-            quote.updated_at = format(new Date(Date.now()), 'dd-MM-yyyy HH:mm:ss');
             await this.quotesRepository.save(quote);
             return this.votesRepository.remove(vote);
         } catch (err) {
