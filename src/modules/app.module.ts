@@ -27,7 +27,7 @@ import { configValidationSchema } from '../config.schema';
         password: configService.get('POSTGRES_PASSWORD'),
         database: configService.get('POSTGRES_DB'),
         autoLoadEntities: true,
-        synchronize: true,
+        synchronize: false,
       }),
     }),
     UsersModule,
