@@ -4,16 +4,13 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const logger = new Logger();
-  const app = await NestFactory.create(AppModule, {
-    cors: {
-      credentials: true,
-      origin: ['http://localhost:3001'],
-    }
-  });
+  const app = await NestFactory.create(AppModule, { cors: true });
 
   // Validation pipe
   app.useGlobalPipes(new ValidationPipe());
-  await app.listen(3000);
+  const PORT = process.env.PORT || 3000;
+  console.log(`MY PORT FOR APPLICATION IS: ${PORT}`);
+  await app.listen(PORT);
   logger.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();
