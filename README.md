@@ -20,18 +20,20 @@ Full-stack application that will allow the user to register, write one paragraph
 Here are some screenshots of the final app:
 
 **Home page (User is not authenticated)**
-![geotagger_homepage](./src/assets/images/geotagger_homepage.png)
-![geotagger_homepage2](./src/assets/images/geotagger_homepage2.png)
+![quotes_homepage](./src/assets/images/quotes_homepage.png)
 **Home page (User is authenticated)**
-![geotagger_homepage_auth](./src/assets/images/geotagger_homepage_auth.png)
+![quotes_homepage_auth](./src/assets/images/quotes_homepage_auth.png)
+![quotes_homepage2_auth](./src/assets/images/quotes_homepage2_auth.png)
 **Profile page**
-![geotagger_profile](./src/assets/images/geotagger_profile.png)
+![quotes_profile](./src/assets/images/quotes_profile.png)
+**Update user modal**
+![quotes_modal](./src/assets/images/quotes_modal.png)
 **Add quote modal**
-![geotagger_modal_guess](./src/assets/images/geotagger_modal_guess.png)
+![quotes_modal_add](./src/assets/images/quotes_modal_add.png)
 **Login page**
-![geotagger_login](./src/assets/images/geotagger_login.png)
+![quotes_login](./src/assets/images/quotes_homepage_login.png)
 **Register page**
-![geotagger_register_filled](./src/assets/images/geotagger_register_filled.png)
+![quotes_register](./src/assets/images/quotes_homepage_register.png)
 
 #### Technologies
 
